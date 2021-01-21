@@ -17,9 +17,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.noor.blooddonation",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId":  "com.googleusercontent.apps.938470999100-okcgoo13m1si6uk4ii9l2693nujep1in"
+        }
+      }
     },
     "android": {
+      "package": "com.noor.blooddonation",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
