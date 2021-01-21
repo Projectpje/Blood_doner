@@ -1,21 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import firebase from 'firebase';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+const firebaseConfig = {
+  databaseURL: 'https://blooddoner-19be1-default-rtdb.firebaseio.com/',
+  apiKey: "AIzaSyCiMq1dMYK6R1iWantDN2wd2Gky8ia1Tho",
+  authDomain: "blooddoner-19be1.firebaseapp.com",
+  projectId: "blooddoner-19be1",
+  storageBucket: "blooddoner-19be1.appspot.com",
+  messagingSenderId: "938470999100",
+  appId: "1:938470999100:web:86610d21fc75fa952fef39",
+  measurementId: "G-2298TL36JK"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp({});
+}else {
+  firebase.app(); // if already initialized, use that one
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+  }
+
+  componentDidMount() {
+   
+  }
+
+  render() {
+    return (
+      <View>
+        <Text> App </Text>
+      </View>
+    );
+  }
+}
