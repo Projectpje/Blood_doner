@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import firebase from 'firebase';
+import AppNavigation from './src/Navigation/index';
 import * as GoogleSignIn from 'expo-google-sign-in';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 
 const firebaseConfig = {
   databaseURL: 'https://blooddoner-19be1-default-rtdb.firebaseio.com/',
@@ -17,20 +16,10 @@ const firebaseConfig = {
 };
 
 if (!firebase.apps.length) {
-  firebase.initializeApp({});
-}else {
+  firebase.initializeApp(firebaseConfig);
+} else {
   firebase.app(); // if already initialized, use that one
 }
-
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
-
-const Stack = createStackNavigator();
 
 export default class App extends Component {
   constructor(props) {
@@ -42,8 +31,42 @@ export default class App extends Component {
   componentDidMount() {
 
     console.log("component did mount");
-  //  this.signInAsync();
+    // this.signInWithGoogle();
   }
+
+  signInWithGoogle = async () => {
+    try {
+      await GoogleSignIn.askForPlayServicesAsync();
+      const { type, user } = await GoogleSignIn.signInAsync();
+      const data = await GoogleSignIn.GoogleAuthentication.prototype.toJSON();
+      if (type === 'success') {
+        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
+        const googleProfileData = await firebase.auth().signInWithCredential(credential);
+        this.onLoginSuccess.bind(this);
+      }
+    } catch ({ message }) {
+      alert('login: Error:' + message);
+    }
+  }
+
+  initAsync = async () => {
+    await GoogleSignIn.initAsync({
+    });
+    this.signInAsync();
+  };
+
+  signInAsync = async () => {
+    try {
+      await GoogleSignIn.askForPlayServicesAsync();
+      const { type, user } = await GoogleSignIn.signInAsync();
+      if (type === 'success') {
+        this._syncUserWithStateAsync();
+      }
+    } catch ({ message }) {
+      alert('login: Error:' + message);
+    }
+  };
 
   signInAsync = async () => {
     try {
@@ -59,11 +82,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <AppNavigation />
     );
   }
 }

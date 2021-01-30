@@ -17,9 +17,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
       "bundleIdentifier": "com.noor.blooddonation",
-      "googleServicesFile": "./GoogleService-Info.plist",
+    "googleServicesFile": "./GoogleService-Info.plist",
       "config": {
         "googleSignIn": {
           "reservedClientId":  "com.googleusercontent.apps.938470999100-okcgoo13m1si6uk4ii9l2693nujep1in"
