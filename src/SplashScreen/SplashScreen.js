@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { View, Animated, Easing } from 'react-native';
-import firebase from 'firebase';
+import {inject, observer} from 'mobx-react';
 import ScreenContainer from '../Components/ScreenContainer/ScreenContainer';
 import R from '../Utils/R';
 import Styles from './styles';
+import { UserType } from '../Utils/Images';
+import { USER_TYPE } from '../Utils/Enums';
 
+@inject("userStore")
+@observer
 export default class SplashScreen extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +21,7 @@ export default class SplashScreen extends Component {
 
   componentDidMount() {
     const { animated, donateBloodAnimated, requestBloodAnimated } = this.state;
-    const { navigation } = this.props;
+   
 
     setTimeout(() => {
       this.runAnimation(animated, 15, 1000);
@@ -26,13 +30,34 @@ export default class SplashScreen extends Component {
     }, 3000);
 
     setTimeout(() => {
-      navigation.navigate('Login');
+      this.navigateToScreen();
     }, 4000);
 
 
     this.runAnimation(animated, 1, 1200);
     this.runAnimation(donateBloodAnimated, 1, 1550);
     this.runAnimation(requestBloodAnimated, 1, 1700);
+  }
+
+
+  navigateToScreen = () => {
+    const {userStore} = this.props;
+    const { navigation } = this.props;
+
+    console.log("userStore", this.props.userStore);
+
+    if(userStore?.isUserLoggedIn) {
+
+      const userType = userStore?.userType;
+      
+      if(userType === USER_TYPE.DONOR) {
+        navigation.navigate("Donor")
+      }
+
+    } else {
+      navigation.navigate("Login");
+    }
+
   }
 
   runAnimation = (animated, toValue, duration) => {

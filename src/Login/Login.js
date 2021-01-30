@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, Image, ScrollView, TextInput, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
+import {inject, observer} from 'mobx-react';
 import firebase from 'firebase';
 import AppButton from "../Components/AppButton/AppButton";
 import AppText from "../Components/AppText/AppText";
@@ -10,7 +11,8 @@ import { USER_TYPE } from "../Utils/Enums";
 import R from "../Utils/R";
 import Styles from "./styles";
 
-
+@inject("userStore")
+@observer
 export default class Login extends Component {
   constructor(props) {
     super(props);
@@ -101,9 +103,9 @@ export default class Login extends Component {
         this.setState({ loading: false })
 
         if (response) {
-          const { navigation } = this.props;
-
-          navigation.navigate("DonorHome")
+          const { navigation, userStore } = this.props;  
+          userStore.setUser(response);
+          navigation.navigate("Donor")
 
         } else {
           this.showUserRecordDeletedMessage();

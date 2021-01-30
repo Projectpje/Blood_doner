@@ -3,6 +3,8 @@ import { View, Text } from 'react-native';
 import firebase from 'firebase';
 import AppNavigation from './src/Navigation/index';
 import * as GoogleSignIn from 'expo-google-sign-in';
+import {Provider} from 'mobx-react';
+import * as store from './src/store';
 
 const firebaseConfig = {
   databaseURL: 'https://blooddoner-19be1-default-rtdb.firebaseio.com/',
@@ -82,7 +84,9 @@ export default class App extends Component {
 
   render() {
     return (
+      <Provider  {...store.rootStore}>
       <AppNavigation />
+      </Provider>
     );
   }
 }

@@ -6,6 +6,7 @@ import SplashScreen from '../SplashScreen/SplashScreen';
 import Registration from '../Registration/Registration';
 import DonorHome from '../Donors/Dashboard/Dashboard';
 import DonorProfile from '../Donors/Profile/Profile';
+import DonorNavigation from './DonorNavigation';
 
 const Stack = createStackNavigator();
 
@@ -18,8 +19,7 @@ const AppNavigation = () => {
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Registration" component={Registration} />
-        <Stack.Screen name="DonorHome" component={DonorHome} />
-        <Stack.Screen name="DonorProfile" component={DonorProfile} />
+        <Stack.Screen name="Donor" component={DonorNavigation} />
       </Stack.Navigator>
     </NavigationContainer>
   );
