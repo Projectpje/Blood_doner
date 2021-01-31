@@ -6,6 +6,10 @@ import * as GoogleSignIn from 'expo-google-sign-in';
 import {Provider} from 'mobx-react';
 import * as store from './src/store';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 const firebaseConfig = {
   databaseURL: 'https://blooddoner-19be1-default-rtdb.firebaseio.com/',
   apiKey: "AIzaSyCiMq1dMYK6R1iWantDN2wd2Gky8ia1Tho",

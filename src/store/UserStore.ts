@@ -26,11 +26,20 @@ class UserStore {
         this.gender = data.gender;
         this.phoneNumber = data.phoneNumber;
         this.onboardingStep = data.onboardingStep;
+    }
 
-        console.log("set User", data, 
-            this.userName,
-            this.emailId
-        )
+    clearData(){
+        this.userName = null;
+        this.emailId = null
+        this.userId = null;
+        this.isUserLoggedIn = false;
+        this.userType = null;
+        this.bloodGroup = null;
+        this.city = null;
+        this.emailVerified = null;
+        this.gender = null;
+        this.phoneNumber = null;
+        this.onboardingStep = null;
     }
 }
 

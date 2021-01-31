@@ -17,8 +17,8 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      emailId: "",
-      password: "",
+      emailId: "hosital@gmail.com",
+      password: "1234567890",
       loading: false,
     };
 
@@ -59,6 +59,8 @@ export default class Login extends Component {
   }
 
   signInUsingEmail = () => {
+
+
     const { emailId, password } = this.state;
 
     this.setState({ loading: true });
@@ -99,13 +101,19 @@ export default class Login extends Component {
       .ref(`${node}/${uid}`).once("value", (data) => {
 
         const response = data.val();
-
         this.setState({ loading: false })
 
         if (response) {
           const { navigation, userStore } = this.props;  
           userStore.setUser(response);
-          navigation.navigate("Donor")
+
+          if(userType === USER_TYPE.DONOR) {
+            navigation.navigate("Donor")
+          } else {
+            navigation.navigate("Hospital")
+          }
+
+         
 
         } else {
           this.showUserRecordDeletedMessage();

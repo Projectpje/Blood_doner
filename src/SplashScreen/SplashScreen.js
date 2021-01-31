@@ -44,14 +44,14 @@ export default class SplashScreen extends Component {
     const {userStore} = this.props;
     const { navigation } = this.props;
 
-    console.log("userStore", this.props.userStore);
-
     if(userStore?.isUserLoggedIn) {
 
       const userType = userStore?.userType;
-      
+
       if(userType === USER_TYPE.DONOR) {
         navigation.navigate("Donor")
+      } else if (userType === USER_TYPE.HOSPITAL) {
+        navigation.navigate("Hospital")
       }
 
     } else {
@@ -81,11 +81,17 @@ export default class SplashScreen extends Component {
       extrapolate: 'clamp'
     });
 
+    const opacityInterpolation = animated.interpolate({
+      inputRange: [0,1,15],
+      outputRange: [1,1,0],
+      extrapolate: 'clamp'
+    })
+
     return {
       ...Styles.logoStyle,
       transform: [{ translateY: translationInterpolation },
       { scale: animated }],
-      opacity: animated,
+      opacity: opacityInterpolation,
     }
 
   }

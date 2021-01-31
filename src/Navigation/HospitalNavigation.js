@@ -1,18 +1,18 @@
 import React from 'react';
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Dashboard from '../Donors/Dashboard/Dashboard';
+import Dashboard from '../Hospitals/Dashboard/Dashboard';
 import Profile from '../Donors/Profile/Profile';
-import AllBloodRequest from '../Donors/AllBloodRequest/AllBloodRequest';
+import AllDonorsList from '../Hospitals/AllDonorsList/AllDonorsList';
 import R from '../Utils/R';
 
 const Tabs = createBottomTabNavigator();
 
-const DonorNavigation = () => {
+const HospitalNavigation = () => {
     return (
         <Tabs.Navigator headerMode={'none'}>
             <Tabs.Screen
-                name="DonorDashboard"
+                name="HospitalDashboard"
                 component={Dashboard}
                 options={{
                     title: "Dashboard",
@@ -25,10 +25,10 @@ const DonorNavigation = () => {
             />
 
             <Tabs.Screen
-                name="AllBloodRequest"
-                component={AllBloodRequest}
+                name="AllDonorsList"
+                component={AllDonorsList}
                 options={{
-                    title: "All Requests",
+                    title: "All Donors",
                     tabBarIcon: () => {
                         return <Image source={R.Images.UserType.Donor}
                             style={{ width: 16, height: 16, resizeMode: 'contain' }}
@@ -53,4 +53,4 @@ const DonorNavigation = () => {
     );
 }
 
-export default DonorNavigation;
+export default HospitalNavigation;
