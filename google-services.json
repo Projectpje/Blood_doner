@@ -30,6 +30,13 @@
             {
               "client_id": "938470999100-6qm781j2f7jhkktpiiie0klgaae3evad.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "938470999100-okcgoo13m1si6uk4ii9l2693nujep1in.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.noor.blooddonation"
+              }
             }
           ]
         }

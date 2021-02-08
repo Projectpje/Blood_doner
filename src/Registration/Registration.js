@@ -58,7 +58,12 @@ export default class Registration extends Component {
 
   onQuestionnaireCompleted = () => {
     const { navigation } = this.props;
-    navigation.navigate("DonorHome");
+    navigation.navigate("Donor");
+  };
+
+  onHospitalProfileCompleted = () => {
+    const { navigation } = this.props;
+    navigation.navigate("Hospital");
   };
 
   render() {
@@ -81,25 +86,28 @@ export default class Registration extends Component {
           scrollEnabled={false}
           ref={(ref) => (this.scrollRef = ref)}
         >
-          {/* <RegistrationType
-                        onRegistrationTypeSelected={this.onRegistrationTypeSelected}
-                    />
+          <RegistrationType
+            onRegistrationTypeSelected={this.onRegistrationTypeSelected}
+          />
 
+          <RegistrationForm
+            isDonor={isDonor}
+            onAccountCreated={this.onAccountCreated}
+          />
 
-                    <RegistrationForm
-                        isDonor={isDonor}
-                        onAccountCreated={this.onAccountCreated}
-                    />
+          {isDonor && (
+            <DonorInfo
+              userId={userId}
+              onProfileCompleted={this.onProfileCompleted}
+            />
+          )}
 
-                    {isDonor && <DonorInfo
-                        userId={userId}
-                        onProfileCompleted={this.onProfileCompleted}
-                    />}
-
-                    {!isDonor && <HospitalInfo
-                        userId={userId}
-                        onProfileCompleted={this.onProfileCompleted}
-                    />} */}
+          {!isDonor && (
+            <HospitalInfo
+              userId={userId}
+              onProfileCompleted={this.onHospitalProfileCompleted}
+            />
+          )}
 
           {(isDonor || true) && (
             <Questionnaire

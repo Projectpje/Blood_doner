@@ -10,6 +10,7 @@ import AppTextInput from "../../../Components/AppTextInput/AppTextInput";
 import DropDownPickerWrapper from "../../../Components/DropDownPickerWrapper/DropDownPickerWrapper";
 import firebase from "firebase";
 import Styles from "./styles";
+import { DATABASE_NODES } from "../../../Utils/Enums";
 
 export default class Questionnaire extends Component {
   constructor(props) {
@@ -98,7 +99,7 @@ export default class Questionnaire extends Component {
 
     firebase
       .database()
-      .ref(`donorInfo/${userId}`)
+      .ref(`${DATABASE_NODES.DONORS}/${userId}/${DATABASE_NODES.DONORINFO}`)
       .update({
         smoke,
         drink,

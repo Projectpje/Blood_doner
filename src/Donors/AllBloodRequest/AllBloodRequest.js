@@ -6,9 +6,9 @@ export default class History extends Component {
     render() {
         return (
             <ScreenContainer>
-                <SafeAreaView>
+             
                 <Text> AllBloodRequest </Text>
-                </SafeAreaView>
+               
             </ScreenContainer>
         )
     }

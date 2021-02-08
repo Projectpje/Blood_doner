@@ -22,11 +22,11 @@ export default class Profile extends Component {
     render() {
         return (
             <ScreenContainer>
-                <SafeAreaView>
+            
                 <AppButton title="Signout"
                     onPress={this.onSignout}
                 />
-                </SafeAreaView>
+             
             </ScreenContainer>
         )
     }

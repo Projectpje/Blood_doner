@@ -1,171 +1,169 @@
-import React, { Component } from 'react'
-import { Alert, Image, Text, TextInput, View } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
-import AppButton from '../../../Components/AppButton/AppButton';
-import AppTextInput from '../../../Components/AppTextInput/AppTextInput';
-import Styles from './styles';
+/** @format */
 
+import React, { Component } from "react";
+import { Alert, Image, Text, TextInput, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
+import AppButton from "../../../Components/AppButton/AppButton";
+import AppTextInput from "../../../Components/AppTextInput/AppTextInput";
+import Styles from "./styles";
 
-import firebase from 'firebase';
-import R from '../../../Utils/R';
-import { USER_TYPE } from '../../../Utils/Enums';
+import firebase from "firebase";
+import R from "../../../Utils/R";
+import { DATABASE_NODES, USER_TYPE } from "../../../Utils/Enums";
 
 export default class RegistrationForm extends Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props);
+    this.state = {
+      emailId: "",
+      password: "",
+      confirmPassword: "",
+      loading: false,
+    };
+  }
 
-        this.state = {
-            emailId: '',
-            password: '',
-            confirmPassword: '',
-            loading: false
+  onemailIdChange = (text) => {
+    this.setState({ emailId: text.trim().toLowerCase() });
+  };
+
+  onPasswordChange = (text) => {
+    this.setState({ password: text });
+  };
+
+  onConfirmPasswordChange = (text) => {
+    this.setState({ confirmPassword: text });
+  };
+
+  validate = () => {
+    const { emailId, password, confirmPassword } = this.state;
+
+    if (!R.HelperFunctions.IsNonEmptyString(emailId)) {
+      this.showAlert("Please enter email id");
+      return;
+    }
+
+    if (password?.length < 6) {
+      this.showAlert("Password length should be atleast 6");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      this.showAlert("Password length should be atleast 6");
+      return;
+    }
+
+    this.onSubmit();
+  };
+
+  showAlert = (message) => {
+    Alert.alert("Error", message);
+  };
+
+  onSubmit = () => {
+    const { emailId, password } = this.state;
+
+    this.setState({
+      loading: true,
+    });
+
+    // onAccountCreated?.();
+    // return;
+
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(emailId, password)
+      .then((resposne) => {
+        console.log("successfull", resposne);
+
+        const {
+          user: { uid, emailVerified },
+        } = resposne;
+
+        this.saveDetailsInDatabase(uid, emailVerified);
+      })
+      .catch(function (error) {
+        this.setState({ loading: false });
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode == "auth/weak-password") {
+          alert("The password is too weak.");
+        } else {
+          alert(errorMessage);
         }
-    }
+      });
+  };
 
-    onemailIdChange = (text) => {
-        this.setState({ emailId: text.trim().toLowerCase() })
-    }
+  saveDetailsInDatabase = (uid, emailVerified) => {
+    const { onAccountCreated, isDonor } = this.props;
+    const { emailId } = this.state;
 
-    onPasswordChange = (text) => {
-        this.setState({ password: text })
-    }
+    const userNode = isDonor ? DATABASE_NODES.DONORS : DATABASE_NODES.HOSPITAL;
 
-    onConfirmPasswordChange = (text) => {
-        this.setState({ confirmPassword: text })
-    }
+    firebase
+      .database()
+      .ref(`${DATABASE_NODES.USERS}/${uid}`)
+      .set({
+        uid,
+        userType: isDonor ? USER_TYPE.DONOR : USER_TYPE.HOSPITAL,
+      });
 
-    validate = () => {
-        const { emailId, password, confirmPassword } = this.state;
+    firebase
+      .database()
+      .ref(`${userNode}/${uid}/`)
+      .set({
+        userType: isDonor ? USER_TYPE.DONOR : USER_TYPE.HOSPITAL,
+        uid,
+        emailId,
+        emailVerified,
+        onboardingStep: 1,
+      })
+      .then(() => {
+        onAccountCreated?.(emailId, uid);
+        this.setState({ loading: false });
+      });
+  };
 
+  render() {
+    const { emailId, password, confirmPassword, loading } = this.state;
 
-        if (!R.HelperFunctions.IsNonEmptyString(emailId)) {
-            this.showAlert("Please enter email id");
-            return;
-        }
+    return (
+      <View style={Styles.containerStyle}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={{
+            height: R.Dimension.height,
+            padding: 20,
+          }}
+        >
+          <AppTextInput
+            value={emailId}
+            onChangeText={this.onemailIdChange}
+            placeholder="Enter email Id"
+            keyboardType="email-address"
+          />
 
-        if (password?.length < 6) {
-            this.showAlert("Password length should be atleast 6");
-            return;
-        }
+          <AppTextInput
+            value={password}
+            onChangeText={this.onPasswordChange}
+            placeholder="Enter Password"
+            secureTextEntry
+          />
 
-        if (password !== confirmPassword) {
-            this.showAlert("Password length should be atleast 6");
-            return;
-        }
+          <AppTextInput
+            value={confirmPassword}
+            onChangeText={this.onConfirmPasswordChange}
+            placeholder="Confirm Password"
+            secureTextEntry
+          />
 
-        this.onSubmit();
-
-    }
-
-    showAlert = (message) => {
-        Alert.alert("Error", message);
-    }
-
-    onSubmit = () => {
-
-
-        const { emailId, password } = this.state;
-
-        this.setState({
-            loading: true
-        })
-
-
-        // onAccountCreated?.();
-        // return;
-
-        firebase.auth().createUserWithEmailAndPassword(emailId, password)
-            .then(resposne => {
-                console.log("successfull", resposne);
-
-                const { user: {
-                    uid, emailVerified
-                } } = resposne;
-
-                this.saveDetailsInDatabase(uid, emailVerified);
-
-
-            })
-            .catch(function (error) {
-                this.setState({ loading: false })
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                if (errorCode == 'auth/weak-password') {
-                    alert('The password is too weak.');
-                } else {
-                    alert(errorMessage);
-                }
-            });
-
-    }
-
-
-    saveDetailsInDatabase = (uid, emailVerified) => {
-
-        const { onAccountCreated, isDonor } = this.props;
-        const { emailId } = this.state;
-
-        const userNode = isDonor ? "donors" : "hospitals";
-
-        firebase.database().ref(`users/${uid}`).set({
-            uid,
-            userType: isDonor ? USER_TYPE.DONOR : USER_TYPE.HOSPITAL
-        })
-
-        firebase.database().ref(`${userNode}/${uid}/`).set({
-            userType: isDonor ? USER_TYPE.DONOR : USER_TYPE.HOSPITAL,
-            uid,
-            emailId,
-            emailVerified,
-            onboardingStep: 1
-        }).then(() => {
-            onAccountCreated?.(emailId, uid);
-            this.setState({ loading: false })
-        })
-    }
-
-    render() {
-        const { emailId, password, confirmPassword, loading } = this.state;
-
-        return (
-            <View style={Styles.containerStyle}>
-                <KeyboardAwareScrollView
-                    contentContainerStyle={{
-                        height: R.Dimension.height,
-                        padding: 20
-                    }}
-                >
-
-                    <AppTextInput
-                        value={emailId}
-                        onChangeText={this.onemailIdChange}
-                        placeholder="Enter email Id"
-                        keyboardType="email-address"
-                    />
-
-                    <AppTextInput
-                        value={password}
-                        onChangeText={this.onPasswordChange}
-                        placeholder="Enter Password"
-                        secureTextEntry
-                    />
-
-                    <AppTextInput
-                        value={confirmPassword}
-                        onChangeText={this.onConfirmPasswordChange}
-                        placeholder="Confirm Password"
-                        secureTextEntry
-                    />
-
-                    <AppButton
-                        onPress={this.validate}
-                        title="Submit"
-                        isLoading={loading}
-                    />
-                </KeyboardAwareScrollView>
-            </View>
-        )
-    }
+          <AppButton
+            onPress={this.validate}
+            title="Submit"
+            isLoading={loading}
+          />
+        </KeyboardAwareScrollView>
+      </View>
+    );
+  }
 }

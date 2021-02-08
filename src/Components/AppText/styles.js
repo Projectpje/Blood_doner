@@ -1,40 +1,52 @@
-import { StyleSheet } from 'react-native';
-import R from '../../Utils/R';
+/** @format */
 
+import { StyleSheet } from "react-native";
+import R from "../../Utils/R";
 
 const styles = StyleSheet.create({
-    normalTextStyle: {
-        fontSize: 16,
-        letterSpacing: 0.5,
-        color: 'white'
-    },
+  containerStyle: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 
-    small: {
-        fontSize: 12,
-        color: 'white'
-    },
+  normalTextStyle: {
+    fontSize: 16,
+    letterSpacing: 0.5,
+    color: "white",
+  },
 
-    lable: {
-        fontSize: 14,
-        color: '#555555'
-    },
+  small: {
+    fontSize: 12,
+    color: "white",
+  },
 
-    errorLabel: {
-        fontSize: 10,
-        color: 'red',
-    },
+  lable: {
+    fontSize: 14,
+    color: "#555555",
+  },
 
-    heading: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white'
-    },
+  errorLabel: {
+    fontSize: 10,
+    color: "red",
+  },
 
-    mandatorySign: {
-        color: 'red',
-        fontSize: 16,
-        height: 16,
-    }
+  heading: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+  },
+
+  mandatorySign: {
+    color: "red",
+    fontSize: 16,
+    height: 16,
+  },
+
+  iconStyle: {
+    width: 16,
+    height: 16,
+    marginRight: 5,
+  },
 });
 
 export default styles;

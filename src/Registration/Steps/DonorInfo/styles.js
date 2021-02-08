@@ -1,25 +1,23 @@
-import { StyleSheet } from 'react-native';
-import R from '../../../Utils/R';
+/** @format */
+
+import { StyleSheet } from "react-native";
+import R from "../../../Utils/R";
 
 const styles = StyleSheet.create({
-    containerStyle: {
-        width: R.Dimension.width,
-        paddingHorizontal: 20
-    },
+  containerStyle: {
+    width: R.Dimension.width,
+    paddingHorizontal: 20,
+  },
 
-    contentContainerStyle: {
-    },
+  contentContainerStyle: {},
 
-    textInputStyle: {
-        marginTop: 5,
+  textInputStyle: {
+    marginTop: 5,
+  },
 
-    },
-
-    buttonStyle: {
-        marginTop: 50
-    }
-
-
+  buttonStyle: {
+    marginTop: 50,
+  },
 });
 
 export default styles;

@@ -1,187 +1,223 @@
-import React, { Component } from 'react'
-import { Text, TextInput, View } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
-import firebase from 'firebase';
-import AppButton from '../../../Components/AppButton/AppButton';
-import AppText from '../../../Components/AppText/AppText';
-import AppTextInput from '../../../Components/AppTextInput/AppTextInput';
-import ChipGroup from '../../../Components/ChipGroup/ChipGroup';
-import ScreenContainer from '../../../Components/ScreenContainer/ScreenContainer';
-import { GENDER } from '../../../Utils/Enums';
-import { IsNonEmptyString } from '../../../Utils/HelperFunctions';
-import R from '../../../Utils/R';
-import Styles from './styles';
+/** @format */
 
-
+import React, { Component } from "react";
+import { Keyboard, Text, TextInput, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
+import firebase from "firebase";
+import AppButton from "../../../Components/AppButton/AppButton";
+import AppText from "../../../Components/AppText/AppText";
+import AppTextInput from "../../../Components/AppTextInput/AppTextInput";
+import ChipGroup from "../../../Components/ChipGroup/ChipGroup";
+import ScreenContainer from "../../../Components/ScreenContainer/ScreenContainer";
+import { DATABASE_NODES, GENDER } from "../../../Utils/Enums";
+import { IsNonEmptyString } from "../../../Utils/HelperFunctions";
+import R from "../../../Utils/R";
+import Styles from "./styles";
+import DateTimePicker from "react-native-modal-datetime-picker";
 
 export default class DonorInfo extends Component {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      name: "",
+      phoneNumber: "",
+      city: "",
+      bloodGroup: "",
+      gender: "",
+      loading: false,
+      dobPicker: false,
+      dob: ""
+    };
+  }
 
-    constructor(props) {
-        super(props);
+  onNameChange = (text) => {
+    this.setState({ name: text });
+  };
 
-        this.state = {
-            name: '',
-            phoneNumber: '',
-            city: '',
-            bloodGroup: '',
-            gender: '',
-            loading: false
-        };
+  onContactChange = (text) => {
+    this.setState({ phoneNumber: text });
+  };
+
+  onCityChange = (text) => {
+    this.setState({ city: text });
+  };
+
+  onBloodGroupChange = (group) => {
+    this.setState({ bloodGroup: group });
+  };
+
+  onRhChange = (rh) => {
+    this.setState({ rh });
+  };
+
+  onGenderChange = (gender) => {
+    this.setState({ gender });
+  };
+
+  showDOBPicker = () => {
+      this.setState({dobPicker: true});
+      Keyboard.dismiss();
+  }
+
+  hideDOBPicker = () => {
+      this.setState({dobPicker: false})
+  }
+
+  validate = () => {
+    const { name, city, phoneNumber, bloodGroup, gender, dob } = this.state;
+
+    if (!IsNonEmptyString(name)) {
+      alert("Enter name");
+      return;
     }
 
-    onNameChange = (text) => {
-        this.setState({ name: text });
+    if (!IsNonEmptyString(phoneNumber)) {
+      alert("Enter Contact Number");
+      return;
     }
 
-    onContactChange = (text) => {
-        this.setState({ phoneNumber: text })
+    if (!IsNonEmptyString(city)) {
+      alert("Enter City");
+      return;
     }
 
-    onCityChange = (text) => {
-        this.setState({ city: text })
+    if (!IsNonEmptyString(dob)) {
+        alert("Select age");
+        return;
+      }
+
+    if (!IsNonEmptyString(bloodGroup)) {
+      alert("Select Blood Group");
+      return;
     }
 
-
-    onBloodGroupChange = (group) => {
-        this.setState({ bloodGroup: group })
+    if (!IsNonEmptyString(gender)) {
+      alert("Select Gender");
+      return;
     }
 
-    onRhChange = (rh) => {
-        this.setState({ rh })
-    }
+    this.saveDataInDatabase();
+  };
 
-    onGenderChange = (gender) => {
-        this.setState({ gender })
-    }
+  onDobChange = (date) => {
+    this.setState({
+        dob: date.toISOString().substring(0, 10),
+        dobPicker: false,
+      });
+  }
 
-    validate = () => {
-        const { name, city, phoneNumber, bloodGroup, gender } = this.state;
+  saveDataInDatabase = () => {
+    const { userId, onProfileCompleted } = this.props;
+    const { name, city, phoneNumber, bloodGroup, gender, dob } = this.state;
 
-        if (!IsNonEmptyString(name)) {
-            alert("Enter name");
-            return
-        }
+    this.setState({ loading: true });
 
-        if (!IsNonEmptyString(phoneNumber)) {
-            alert("Enter Contact Number");
-            return;
-        }
+    firebase
+      .database()
+      .ref(`${DATABASE_NODES.DONORS}/${userId}`)
+      .update({
+        name,
+        phoneNumber,
+        city,
+        bloodGroup,
+        gender,
+        onboardingStep: 2,
+        dob
+      })
+      .finally(() => {
+        this.setState({ loading: false });
+        onProfileCompleted?.();
+      });
+  };
 
-        if (!IsNonEmptyString(city)) {
-            alert("Enter City")
-            return
-        }
+  render() {
+    const { name, city, phoneNumber, bloodGroup, gender, loading, dobPicker, dob } = this.state;
 
-        if (!IsNonEmptyString(bloodGroup)) {
-            alert("Select Blood Group");
-            return;
-        }
+    return (
+      <View style={Styles.containerStyle}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={Styles.contentContainerStyle}
+        >
+          <AppTextInput
+            value={name}
+            onChangeText={this.onNameChange}
+            placeholder="Enter Name"
+            isNonEmpty
+            style={Styles.textInputStyle}
+          />
 
-        if (!IsNonEmptyString(gender)) {
-            alert("Select Gender");
-            return;
-        }
+          <AppTextInput
+            value={phoneNumber}
+            onChangeText={this.onContactChange}
+            placeholder="Contact Number"
+            keyboardType="phone-pad"
+            isNonEmpty
+            style={Styles.textInputStyle}
+          />
 
+      
 
-        this.saveDataInDatabase();
-
-    }
-
-    saveDataInDatabase = () => {
-        const { userId, onProfileCompleted } = this.props;
-        const { name, city, phoneNumber, bloodGroup, gender } = this.state;
-
-        this.setState({ loading: true });
-
-        firebase.database().ref(`donors/${userId}`)
-            .update({
-                name,
-                phoneNumber,
-                city,
-                bloodGroup,
-                gender,
-                onboardingStep: 2
-            }).finally(() => {
-                this.setState({ loading: false })
-                onProfileCompleted?.();
-            })
-    }
-
-
-
-    render() {
-
-        const { name, city, phoneNumber, bloodGroup, gender, loading } = this.state;
-
-
-        return (
-            <View style={Styles.containerStyle}>
-                <KeyboardAwareScrollView
-                    contentContainerStyle={Styles.contentContainerStyle}
-                >
-
-                    <AppTextInput
-                        value={name}
-                        onChangeText={this.onNameChange}
-                        placeholder="Enter Name"
-                        isNonEmpty
-                        style={Styles.textInputStyle}
-                    />
-
-                    <AppTextInput
-                        value={phoneNumber}
-                        onChangeText={this.onContactChange}
-                        placeholder="Contact Number"
-                        keyboardType="phone-pad"
-                        isNonEmpty
-                        style={Styles.textInputStyle}
-                    />
-
-                    <AppTextInput
-                        value={city}
-                        onChangeText={this.onCityChange}
-                        placeholder="Current City"
-                        isNonEmpty
-                        style={Styles.textInputStyle}
-                    />
-
-                    <AppText
-
-                        style={Styles.textInputStyle}
-                        type="label">Blood Group</AppText>
+          <AppTextInput
+            value={city}
+            onChangeText={this.onCityChange}
+            placeholder="Current City"
+            isNonEmpty
+            style={Styles.textInputStyle}
+          />
 
 
-                    <ChipGroup
-                        onSelected={this.onBloodGroupChange}
-                        selectedChips={[bloodGroup]}
-                        scrollEnabled
-                        horizontal
-                        data={R.ChipsData.BloodGroups}
-                    />
+        <AppTextInput
+          placeholder="Date of birth"
+          style={Styles.textInputStyle}
+          value={dob}
+          onFocus={this.showDOBPicker}
+          hideErrorLabel
+        />
 
-                    <AppText
-                        style={Styles.textInputStyle}
-                        type="label">Select Gender</AppText>
+        <DateTimePicker
+          isVisible={dobPicker}
+          mode="date"
+          onConfirm={this.onDobChange}
+          onCancel={this.hideDOBPicker}
+        />
 
-                    <ChipGroup
-                        style={Styles.textInputStyle}
-                        horizontal
-                        miniumHorizontalGap={10}
-                        data={R.ChipsData.GenderData}
-                        onSelected={this.onGenderChange}
-                        selectedChips={[gender]}
-                    />
+          <AppText style={Styles.textInputStyle} type="label">
+            Blood Group
+          </AppText>
 
+          <ChipGroup
+            style={{ marginTop: 4, }}
+            onSelected={this.onBloodGroupChange}
+            selectedChips={[bloodGroup]}
+            scrollEnabled
+            horizontal
+            data={R.ChipsData.BloodGroups}
+            miniumHorizontalGap={15}
+          />
 
-                    <AppButton
-                        style={Styles.buttonStyle}
-                        title="Save"
-                        onPress={this.validate}
-                        isLoading={loading}
-                    />
-                </KeyboardAwareScrollView>
-            </View>
-        )
-    }
+          <AppText style={{ marginTop: 20 }} type="label">
+            Select Gender
+          </AppText>
+
+          <ChipGroup
+            style={{ marginTop: 4 }}
+            horizontal
+            scrollEnabled={false}
+            miniumHorizontalGap={0}
+            data={R.ChipsData.GenderData}
+            onSelected={this.onGenderChange}
+            selectedChips={[gender]}
+          />
+
+          <AppButton
+            style={Styles.buttonStyle}
+            title="Save"
+            onPress={this.validate}
+            isLoading={loading}
+          />
+        </KeyboardAwareScrollView>
+      </View>
+    );
+  }
 }
