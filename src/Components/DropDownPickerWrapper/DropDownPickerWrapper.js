@@ -4,6 +4,11 @@ import React from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Styles from "./styles";
 
+/**
+ * Wrapper for the DropDownPicker from react-native-dropdown-picker library.
+ * Applies common styles
+ */
+
 export default function DropDownPickerWrapper(props) {
   const { options = [], onChangeItem } = props;
 

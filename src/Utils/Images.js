@@ -21,3 +21,4 @@ export const Contact = {
 export const AGE = require("../../assets/adult.png");
 export const FILTERS = require("../../assets/filter.png");
 export const TICK = require("../../assets/tick.png");
+export const EMPTY_COMPONENT = require("../../assets/empty.png");

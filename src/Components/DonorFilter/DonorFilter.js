@@ -4,7 +4,6 @@ import React, { Component } from "react";
 import { Image, Text, TouchableOpacity, View, Slider } from "react-native";
 import { BloodGroups, GenderData } from "../../Utils/Constants/ChipsData";
 import R from "../../Utils/R";
-import AppButton from "../AppButton/AppButton";
 import lodash from "lodash";
 import AppText from "../AppText/AppText";
 import ChipGroup from "../ChipGroup/ChipGroup";
@@ -13,6 +12,10 @@ import Styles from "./styles";
 const MinimumAge = 18;
 const MaxiumAge = MinimumAge + 50;
 
+/**
+ * Filter component which incapsulate basic filtering options for the donor
+ *
+ */
 export default class DonorFilter extends Component {
   constructor(props) {
     super(props);
@@ -25,14 +28,19 @@ export default class DonorFilter extends Component {
     };
   }
 
+  // When filter visiblity is toggle, run the animation
   toggleFilter = () => {
     const { expandFilter } = this.state;
     R.HelperFunctions.runAnimation();
     this.setState({ expandFilter: !expandFilter });
   };
 
+  // Update the filter.
   updateFilters = () => {
     const { onUpdateFilters } = this.props;
+
+    // debouncing the event so that there is a little delay between selection change and state update,
+    // will prevent updating the ui too frequently
     const debounceFunction = lodash.debounce(() => {
       onUpdateFilters?.(this.state);
     }, 500);

@@ -43,9 +43,19 @@ export const FORM_TYPE = {
 export const DATABASE_NODES = {
   DONORS: "donors",
   HOSPITAL: "hospitals",
+  ADMIN: "Admins",
   USERS: "users",
   DONORINFO: "donorInfo",
   HOSPITALINFO: "hospitalInfo",
   HOSPITAL_NOTIFICATION: "hospital_notification",
-  DONOR_NOTIFICATION: "donor_notification"
+  DONOR_NOTIFICATION: "donor_notification",
+};
+
+export const REQUEST_STATUS = {
+  PENDING: "pending",
+  ACCEPTED: "accepted",
+  REJECTED: "rejected",
+  CANCELLED: "cancelled",
+  COMPLETED: "completed",
+  EXPIRED: "expired",
 };

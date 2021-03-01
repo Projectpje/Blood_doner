@@ -1,35 +1,179 @@
-import React, { Component } from 'react'
-import { SafeAreaView, Text, View } from 'react-native'
-import {inject, observer} from 'mobx-react';
-import ScreenContainer from '../../Components/ScreenContainer/ScreenContainer';
-import Card from '../../Components/Card/Card';
-import R from '../../Utils/R';
-import Styles from './styles';
-import AppText from '../../Components/AppText/AppText';
+/** @format */
+
+import React, { Component } from "react";
+import { FlatList, View } from "react-native";
+import { inject, observer } from "mobx-react";
+import firebase from "firebase";
+import ScreenContainer from "../../Components/ScreenContainer/ScreenContainer";
+import R from "../../Utils/R";
+import Styles from "./styles";
+import AppText from "../../Components/AppText/AppText";
+import { DATABASE_NODES, REQUEST_STATUS } from "../../Utils/Enums";
+import NotificationCard from "../../Components/NotificationCard/NotificationCard";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
+import * as Location from "expo-location";
+import ViewPager from "@react-native-community/viewpager";
+import { WebView } from "react-native-webview";
+import EmptyListComponent from "../../Components/EmptyListComponent/EmptyListComponent";
 
 @inject("userStore")
 @observer
 export default class Dashboard extends Component {
-    render() {
+  constructor(props) {
+    super(props);
 
-        return (
-            <ScreenContainer>
-                <SafeAreaView />
-                <View style={Styles.containerStyle}>
+    this.state = {
+      selectedIndex: 0,
+      upcomingNotification: [],
+      pendingNotification: [],
+      loading: true,
+    };
+  }
 
-                <Card>
-                   <AppText>Upcoming Dontation Date: </AppText>
-                </Card>
+  async componentDidMount() {
+    // await Location.requestPermissionsAsync();
+    // let location = await Location.getCurrentPositionAsync({});
 
-                <Card style={{marginTop: 20}}>
-                   <AppText>Donation requests: </AppText>
-                </Card>
+    // console.log("Location is", location);
 
-                <AppText>Donation History</AppText> 
-                
-                </View>
+    const {
+      userStore: { userId },
+    } = this.props;
 
-            </ScreenContainer>
-        )
-    }
+    console.log(userId);
+
+    firebase
+      .database()
+      .ref(`${DATABASE_NODES.DONOR_NOTIFICATION}/${userId}`)
+      .on("value", (snapshot) => {
+        const data = snapshot.val() ?? {};
+
+        console.log("value is", data);
+
+        const notifications = [];
+
+        for (let key in data) {
+          const notification = data[key];
+          notifications.push(notification);
+        }
+
+        const filterNotification = notifications
+          .sort(R.HelperFunctions.CompoareNotificationBySendOn)
+          .filter((notif) => {
+            const hasExpired = R.HelperFunctions.hasNotificationExpired(notif);
+            return notif.status === REQUEST_STATUS.ACCEPTED && !hasExpired;
+          });
+
+        const pendingNotification = notifications
+          .sort(R.HelperFunctions.CompoareNotificationBySendOn)
+          .filter((notif) => {
+            const hasExpired = R.HelperFunctions.hasNotificationExpired(notif);
+            return notif.status === REQUEST_STATUS.PENDING && !hasExpired;
+          });
+
+        this.setState({
+          upcomingNotification: filterNotification,
+          pendingNotification,
+          loading: false,
+        });
+      });
+  }
+
+  onPageIndexChange = ({ nativeEvent }) => {
+    const { position } = nativeEvent;
+
+    this.setState({ selectedIndex: position });
+  };
+
+  render() {
+    const {
+      upcomingNotification = [],
+      pendingNotification = [],
+      selectedIndex,
+      loading,
+    } = this.state;
+
+    return (
+      <ScreenContainer loading={loading}>
+        <View style={{ flexDirection: "row" }}>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <AppText
+              onPress={() => {
+                this.pagerRef.setPage(0);
+              }}
+              style={{ color: selectedIndex === 0 ? "red" : "white" }}
+            >
+              Upcoming
+            </AppText>
+          </View>
+
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <AppText
+              style={{ color: selectedIndex === 1 ? "red" : "white" }}
+              onPress={() => {
+                this.pagerRef.setPage(1);
+              }}
+            >
+              Pending
+            </AppText>
+          </View>
+        </View>
+
+        <ViewPager
+          ref={(ref) => {
+            this.pagerRef = ref;
+          }}
+          style={{ flex: 1 }}
+          initialPage={0}
+          onPageSelected={this.onPageIndexChange}
+        >
+          <View key="1" style={{ padding: 10 }}>
+            <FlatList
+              data={upcomingNotification}
+              ListEmptyComponent={() => {
+                return (
+                  <EmptyListComponent
+                    label="No Upcoming notification"
+                    loading={loading}
+                  />
+                );
+              }}
+              renderItem={({ item }) => {
+                return (
+                  <View style={{ marginTop: 10 }}>
+                    <NotificationCard item={item} isDonor />
+                  </View>
+                );
+              }}
+            />
+          </View>
+
+          <View key="2" style={{ padding: 10 }}>
+            <FlatList
+              data={pendingNotification}
+              ListEmptyComponent={() => {
+                return (
+                  <EmptyListComponent
+                    label="No Pending notification"
+                    loading={loading}
+                  />
+                );
+              }}
+              renderItem={({ item }) => {
+                return (
+                  <View style={{ marginTop: 10 }}>
+                    <NotificationCard item={item} isDonor />
+                  </View>
+                );
+              }}
+            />
+          </View>
+        </ViewPager>
+      </ScreenContainer>
+    );
+  }
 }

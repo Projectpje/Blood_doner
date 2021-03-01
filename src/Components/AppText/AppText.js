@@ -5,6 +5,17 @@ import { View, Text, Image } from "react-native";
 import Styles from "./styles";
 
 /**
+ * Common Text component wrapper.
+ *
+ * @param {string} type:- Applies common style based on type, different styles are:-
+ *                        normal, small,  errorLabel, heading, label
+ *  @param {boolean} isMandatory :- When true, it will show a astrik next to text to indicate the field is mandatory
+ * @param  {object} containerStyle :- Style of the container
+ * @param {icon} leftIcon :- Icon path to show on the left of the text
+ * @param {object} leftIconStyle :- style of the leftIcon
+ */
+
+/**
  * Different Text Type:
  *
  * 1. normal

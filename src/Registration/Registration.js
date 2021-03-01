@@ -11,11 +11,15 @@ import RegistrationForm from "./Steps/RegistrationForm/RegistrationForm";
 import DonorInfo from "./Steps/DonorInfo/DonorInfo";
 import HospitalInfo from "./Steps/HospitalInfo/HospitalInfo";
 import R from "../Utils/R";
-import { USER_TYPE } from "../Utils/Enums";
+import { DATABASE_NODES, USER_TYPE } from "../Utils/Enums";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import ScreenContainer from "../Components/ScreenContainer/ScreenContainer";
 import Questionnaire from "./Steps/Questionnaire/Questionnaire";
+import firebase from "firebase";
+import { inject, observer } from "mobx-react";
 
+@inject("userStore")
+@observer
 export default class Registration extends Component {
   scrollRef: ScrollView = null;
 
@@ -32,12 +36,14 @@ export default class Registration extends Component {
     };
   }
 
+  // When one of donor or hospital notification type selected
   onRegistrationTypeSelected = (registrationType) => {
     this.setState({ registrationType, currentStep: 1 });
 
     this.scrollRef?.scrollTo({ x: R.Dimension.width, y: 0, animated: true });
   };
 
+  // In the second step, create a user with email id and passowrd, 
   onAccountCreated = (emailId, userId) => {
     this.setState({ emailId, userId, currentStep: 2 });
     this.scrollRef?.scrollTo({
@@ -47,6 +53,7 @@ export default class Registration extends Component {
     });
   };
 
+  // When donor profile is completed, show Questionnaire screen.
   onProfileCompleted = () => {
     this.setState({ questionnaire: true, currentStep: 3 });
     this.scrollRef?.scrollTo({
@@ -56,14 +63,44 @@ export default class Registration extends Component {
     });
   };
 
+  // Once questionnarire is completed, navigate to donor screen
   onQuestionnaireCompleted = () => {
     const { navigation } = this.props;
-    navigation.navigate("Donor");
+    const { userId } = this.state;
+
+    // Fetch donor infor from firebase and save into userStore
+    firebase
+      .database()
+      .ref(`${DATABASE_NODES.DONORS}/${userId}`)
+      .once("value", (data) => {
+        const response = data.val();
+
+        if (response) {
+          const { navigation, userStore } = this.props;
+          userStore.setUser(response);
+          navigation.navigate("Donor");
+        }
+      });
   };
 
+  // Once hospital profile is completed, navigate to hospital dashboard
   onHospitalProfileCompleted = () => {
     const { navigation } = this.props;
-    navigation.navigate("Hospital");
+    const { userId } = this.state;
+
+    // Fetch Hospital info from the firebase and save into userStore
+    firebase
+      .database()
+      .ref(`${DATABASE_NODES.HOSPITAL}/${userId}`)
+      .once("value", (data) => {
+        const response = data.val();
+
+        if (response) {
+          const { navigation, userStore } = this.props;
+          userStore.setUser(response);
+          navigation.navigate("Hospital");
+        }
+      });
   };
 
   render() {

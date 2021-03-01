@@ -50,6 +50,7 @@ export default class Login extends Component {
     }
   };
 
+  // Check whether all the input are valid or not
   validate = () => {
     const { emailId, password } = this.state;
     return emailId?.trim()?.length > 0 && password?.trim()?.length > 0;
@@ -76,6 +77,8 @@ export default class Login extends Component {
       });
   };
 
+  // Once user is signed in using email and password, fetch user type,
+  // once usertype is fetched fetch the data from specific node.
   fetchUserType = (uid) => {
     firebase
       .database()
@@ -94,10 +97,7 @@ export default class Login extends Component {
   };
 
   fetchCurrentUserRecord = (uid, userType) => {
-    const node =
-      userType === USER_TYPE.DONOR
-        ? DATABASE_NODES.DONORS
-        : DATABASE_NODES.HOSPITAL;
+    const node = R.HelperFunctions.GetUserNodeFromUserType(userType);
 
     firebase
       .database()
@@ -111,9 +111,11 @@ export default class Login extends Component {
           userStore.setUser(response);
 
           if (userType === USER_TYPE.DONOR) {
-            navigation.navigate("Donor");
-          } else {
-            navigation.navigate("Hospital");
+            R.HelperFunctions.resetStack(navigation, "Donor");
+          } else if (userType === USER_TYPE.HOSPITAL) {
+            R.HelperFunctions.resetStack(navigation, "Hospital");
+          } else if (userType === USER_TYPE.ADMIN) {
+            R.HelperFunctions.resetStack(navigation, "Admin");
           }
         } else {
           this.showUserRecordDeletedMessage();

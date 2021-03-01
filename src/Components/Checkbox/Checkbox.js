@@ -5,6 +5,12 @@ import { View, Text, Image } from "react-native";
 import R from "../../Utils/R";
 import Styles from "./styles";
 
+/**
+ * Component to show selection checkbox on both platform
+ *
+ * @param {boolean} selected
+ * @param {func} onValueChange callback when checkbox is toggled
+ */
 export default function Checkbox({ selected, onValueChange }) {
   return (
     <View

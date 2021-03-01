@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
     backgroundColor: R.Colors.PrimaryColor,
     padding: 10,
     flexDirection: "row",
-    borderRadius: 15,
     flex: 1,
     overflow: "hidden",
   },

@@ -1,32 +1,23 @@
-import { create, persist } from 'mobx-persist';
-import { AsyncStorage } from 'react-native';
-import UserStore from './UserStore';
+/** @format */
 
+import { create, persist } from "mobx-persist";
+import { AsyncStorage } from "react-native";
+import UserStore from "./UserStore";
 
 const hydrate = create({
-    storage: AsyncStorage,
-    jsonify: true
+  storage: AsyncStorage,
+  jsonify: true,
 });
 
 class RootStore {
-    userStore = new UserStore();
+  userStore = new UserStore();
 
-    constructor() {
-        console.log("hydrating store");
-
-        AsyncStorage.setItem("test", "test").then(() => {
-            AsyncStorage.getItem("test").then(value => {
-                console.log("value is", value);
-            })
-        })
-
-        hydrate("userStore", this.userStore).then(result => {
-            console.log("store hydrated", result);
-        }).catch(error => {
-            console.log("error is", error);
-        });
-    }
+  constructor() {
+    //   read from the local database record for "userStore" and put it object userStore
+    hydrate("userStore", this.userStore)
+      .then((result) => {})
+      .catch((error) => {});
+  }
 }
-
 
 export const rootStore = new RootStore();

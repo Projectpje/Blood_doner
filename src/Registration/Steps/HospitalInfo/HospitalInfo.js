@@ -18,6 +18,7 @@ export default class HospitalInfo extends Component {
       name: "",
       country: "",
       city: "",
+      phoneNumber: "",
       completeAddress: "",
       licenseNo: "",
       loading: false,
@@ -27,6 +28,10 @@ export default class HospitalInfo extends Component {
   onChangeName = (text) => {
     this.setState({ name: text });
   };
+
+  onPhoneNumberChange = (text) => {
+    this.setState({phoneNumber: text})
+  }
 
   onChangeCountry = (text) => {
     this.setState({ country: text });
@@ -45,7 +50,7 @@ export default class HospitalInfo extends Component {
   };
 
   validate = () => {
-    const { name, country, city, completeAddress, licenseNo } = this.state;
+    const { name,phoneNumber, country, city, completeAddress, licenseNo } = this.state;
 
     if (
       !(
@@ -53,7 +58,8 @@ export default class HospitalInfo extends Component {
         IsNonEmptyString(country) ||
         IsNonEmptyString(city) ||
         IsNonEmptyString(completeAddress) ||
-        IsNonEmptyString(licenseNo)
+        IsNonEmptyString(licenseNo) ||
+        IsNonEmptyString(phoneNumber)
       )
     ) {
       alert("All fields are required");
@@ -64,7 +70,7 @@ export default class HospitalInfo extends Component {
   };
 
   saveRecordInDatabase = () => {
-    const { name, country, city, completeAddress, licenseNo } = this.state;
+    const { name, country, city, completeAddress, licenseNo, phoneNumber } = this.state;
     const { onProfileCompleted } = this.props;
 
     const { userId } = this.props;
@@ -73,15 +79,14 @@ export default class HospitalInfo extends Component {
 
     firebase
       .database()
-      .ref(
-        `${DATABASE_NODES.HOSPITAL}/${userId}/${DATABASE_NODES.HOSPITALINFO}`
-      )
+      .ref(`${DATABASE_NODES.HOSPITAL}/${userId}`)
       .update({
         name,
         country,
         city,
         completeAddress,
         licenseNo,
+        phoneNumber
       })
       .then(() => {
         onProfileCompleted?.();
@@ -102,6 +107,7 @@ export default class HospitalInfo extends Component {
       completeAddress,
       licenseNo,
       loading,
+      phoneNumber
     } = this.state;
 
     return (
@@ -116,6 +122,15 @@ export default class HospitalInfo extends Component {
             value={name}
             onChangeText={this.onChangeName}
           />
+
+          <AppTextInput
+            placeholder="Enter Contact Number"
+            isNonEmpty
+            style={Styles.inputStyle}
+            value={phoneNumber}
+            onChangeText={this.onPhoneNumberChange}
+          />
+
           <AppTextInput
             placeholder="Country"
             isNonEmpty
@@ -136,7 +151,6 @@ export default class HospitalInfo extends Component {
             isNonEmpty
             style={Styles.inputStyle}
             value={completeAddress}
-            multiline
             onChangeText={this.onChangeAddress}
           />
 

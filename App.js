@@ -2,6 +2,7 @@
 
 import React, { Component } from "react";
 import firebase from "firebase";
+import { View } from "react-native";
 import AppNavigation from "./src/Navigation/index";
 import * as GoogleSignIn from "expo-google-sign-in";
 import { inject, Provider } from "mobx-react";
@@ -10,7 +11,9 @@ import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 
 import { LogBox } from "react-native";
-LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+import PushNotificationContainer from "./src/Components/PushNotificationContainer/PushNotificationContainer";
+
+// LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const firebaseConfig = {
@@ -38,7 +41,7 @@ export default class App extends Component {
 
   componentDidMount() {
     console.log("component did mount");
-    this.registerForPushNotificationsAsync();
+    // this.registerForPushNotificationsAsync();
     // this.signInWithGoogle();
   }
 
@@ -124,8 +127,13 @@ export default class App extends Component {
 
   render() {
     return (
+      // provider is basically uses concept of context api.
+      // Context api: https://blog.logrocket.com/a-deep-dive-into-react-context-api/
       <Provider {...store.rootStore}>
-        <AppNavigation />
+        <View style={{ flex: 1 }}>
+          <AppNavigation />
+          <PushNotificationContainer />
+        </View>
       </Provider>
     );
   }

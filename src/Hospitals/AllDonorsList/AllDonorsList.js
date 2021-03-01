@@ -1,21 +1,30 @@
 /** @format */
 
 import React, { Component } from "react";
-import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
+import {
+  Animated,
+  FlatList,
+  Image,
+  SafeAreaView,
+  Text,
+  View,
+} from "react-native";
 import ScreenContainer from "../../Components/ScreenContainer/ScreenContainer";
 import firebase from "firebase";
 import AppText from "../../Components/AppText/AppText";
 import { Value } from "react-native-reanimated";
 import DonorDetailsCard from "../../Components/DonorDetailsCard/DonorDetailsCard";
 import Styles from "./styles";
-import { DATABASE_NODES } from "../../Utils/Enums";
+import { DATABASE_NODES, USER_TYPE } from "../../Utils/Enums";
 import R from "../../Utils/R";
 import DonorFilter from "../../Components/DonorFilter/DonorFilter";
 import { inject, observer } from "mobx-react";
 import moment from "moment";
 import { UserType } from "../../Utils/Images";
+import NotificationSenderView from "../../Components/NotificationSenderView/NotificationSenderView";
+import EmptyListComponent from "../../Components/EmptyListComponent/EmptyListComponent";
 
-@inject('userStore')
+@inject("userStore")
 @observer
 export default class AllDonorsList extends Component {
   constructor(props) {
@@ -26,18 +35,17 @@ export default class AllDonorsList extends Component {
       filteredList: [],
       multiSelectEnabled: false,
       selectedDonors: [],
+      multiSelectionAnimated: new Animated.Value(0),
+      loading: true,
     };
   }
 
   componentDidMount() {
-    
     this.fetchDonorsList();
   }
 
   onItemLongPress = (donor) => {
     const { selectedDonors } = this.state;
-
-    this.setState({ multiSelectEnabled: true });
 
     const isAlreadyPresent = selectedDonors.some((value) => {
       return value.uid === donor.uid;
@@ -59,6 +67,18 @@ export default class AllDonorsList extends Component {
       multiSelectEnabled: hasMultiSelectEnabled,
       selectedDonors: newDonorList,
     });
+
+    this.runAnimation(hasMultiSelectEnabled ? 1 : 0);
+  };
+
+  runAnimation = (toValue) => {
+    const { multiSelectionAnimated } = this.state;
+
+    Animated.timing(multiSelectionAnimated, {
+      toValue,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
   };
 
   onDonorClick = (donor) => {
@@ -71,12 +91,10 @@ export default class AllDonorsList extends Component {
   };
 
   fetchDonorsList() {
-
     firebase
       .database()
       .ref(DATABASE_NODES.DONORS)
       .on("value", (snapshot) => {
-
         const response = snapshot.val();
 
         const donorsList = [];
@@ -86,28 +104,28 @@ export default class AllDonorsList extends Component {
           donorsList.push(user);
         }
 
-        this.setState({ donorsList, filteredList: donorsList });
+        this.setState({ donorsList, filteredList: donorsList, loading: false });
       });
   }
 
   renderItem = ({ item, index }) => {
     const { multiSelectEnabled, selectedDonors } = this.state;
-    const {userId, userType} = this.props.userStore;
+    const { userId, userType } = this.props.userStore;
 
     const isSelected = selectedDonors.some((value) => {
       console.log(value, item);
       return value.uid === item.uid;
-    })
+    });
 
     return (
       <DonorDetailsCard
         donor={item}
         multiSelectEnabled={multiSelectEnabled}
         selectedDonors={selectedDonors}
-        isSelected = {isSelected}
+        isSelected={isSelected}
         onLongPress={this.onItemLongPress}
         loginUserId={userId}
-        isHospital = {userType === UserType.Donor}
+        isAdmin={userType === USER_TYPE.ADMIN}
       />
     );
   };
@@ -161,25 +179,79 @@ export default class AllDonorsList extends Component {
     this.setState({ filteredList: newDonorList });
   };
 
+  getNotificationComposerViewAnimatedStyle = () => {
+    const { multiSelectionAnimated } = this.state;
+
+    const translationInterpolation = multiSelectionAnimated.interpolate({
+      inputRange: [0, 1],
+      outputRange: [400, 0],
+    });
+
+    return {
+      borderRadius: 10,
+      overflow: "hidden",
+      position: "absolute",
+      bottom: 0,
+      left: 10,
+      right: 10,
+      bottom: 10,
+      transform: [
+        {
+          translateY: translationInterpolation,
+        },
+      ],
+    };
+  };
+
   render() {
-    const { filteredList } = this.state;
+    const {
+      filteredList,
+      multiSelectEnabled,
+      selectedDonors,
+      loading,
+    } = this.state;
+    const { userId } = this.props.userStore;
+    const notificationComposerStyle = this.getNotificationComposerViewAnimatedStyle();
 
     return (
-      <ScreenContainer>
+      <ScreenContainer loading={loading}>
         <View style={Styles.containerStyle}>
-          <AppText>AllDonorsList</AppText>
+          <AppText
+            type="heading"
+            style={{ textAlign: "center", width: "100%", marginBottom: 10 }}
+          >
+            Find Donor
+          </AppText>
 
           <DonorFilter onUpdateFilters={this.onUpdateFilters} />
 
           <FlatList
-            style={{ marginTop: 20 }}
+            showsVerticalScrollIndicator={false}
+            style={{ marginTop: 20, flex: 1 }}
+            contentContainerStyle={{
+              paddingBottom: multiSelectEnabled ? 200 : 10,
+            }}
             data={filteredList}
             renderItem={this.renderItem}
+            ListEmptyComponent={() => {
+              return <EmptyListComponent loading={loading} />;
+            }}
             ItemSeparatorComponent={this.renderItemSeparator}
-            keyExtractor={value => {
-              return value.uid
+            keyExtractor={(value) => {
+              return value.uid;
             }}
           />
+
+          <Animated.View style={notificationComposerStyle}>
+            <NotificationSenderView
+              users={selectedDonors}
+              userId={userId}
+              onSuccess={() => {
+                this.setState({ multiSelectEnabled: false });
+                this.runAnimation(0);
+              }}
+            />
+          </Animated.View>
         </View>
       </ScreenContainer>
     );
