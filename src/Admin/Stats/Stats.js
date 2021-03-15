@@ -125,6 +125,10 @@ export default class Stats extends Component {
 
     return (
       <ScreenContainer loading={loading}>
+        <AppText type="heading" style={{ width: "100%", textAlign: "center" }}>
+          Stats
+        </AppText>
+
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <PieChart
             hasLegend={false}

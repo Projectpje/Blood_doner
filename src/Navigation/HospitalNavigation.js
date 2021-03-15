@@ -3,9 +3,9 @@
 import React from "react";
 import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from "@react-navigation/stack";
 import Dashboard from "../Hospitals/Dashboard/Dashboard";
-import DonorProfile from '../Hospitals/DonorProfile/DonorProfile';
+import DonorProfile from "../Hospitals/DonorProfile/DonorProfile";
 import Profile from "../Donors/Profile/Profile";
 import AllDonorsList from "../Hospitals/AllDonorsList/AllDonorsList";
 import R from "../Utils/R";
@@ -55,7 +55,7 @@ const BottomTab = () => {
           tabBarIcon: () => {
             return (
               <Image
-                source={R.Images.UserType.Donor}
+                source={R.Images.PROFILE}
                 style={{ width: 16, height: 16, resizeMode: "contain" }}
               />
             );
@@ -66,21 +66,14 @@ const BottomTab = () => {
   );
 };
 
-
 const HospitalNavigation = () => {
-  return <Stack.Navigator
-    headerMode="none"
-  >
-    <Stack.Screen
-      name="Tabs"
-      component={BottomTab}
-    />
+  return (
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen name="Tabs" component={BottomTab} />
 
-    <Stack.Screen 
-      name="DonorProfile"
-      component={DonorProfile}
-    />
-  </Stack.Navigator>
-}
+      <Stack.Screen name="DonorProfile" component={DonorProfile} />
+    </Stack.Navigator>
+  );
+};
 
 export default HospitalNavigation;

@@ -67,8 +67,9 @@ export default class AllBloodRequest extends Component {
 
     return (
       <ScreenContainer>
-        <View style={{ padding: 10 }}>
+        <View style={{ padding: 10, flex: 1 }}>
           <FlatList
+            contentContainerStyle={{ flex: 1 }}
             keyExtractor={(item) => {
               return `${item.notificationId}`;
             }}

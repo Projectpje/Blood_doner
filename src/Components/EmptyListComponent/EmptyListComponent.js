@@ -15,8 +15,7 @@ export default function EmptyListComponent({ label, loading }) {
   return (
     <View
       style={{
-        minHeight: 500,
-        width: "100%",
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}

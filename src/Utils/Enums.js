@@ -59,3 +59,18 @@ export const REQUEST_STATUS = {
   COMPLETED: "completed",
   EXPIRED: "expired",
 };
+
+export const SortType = {
+  ASCENDING: "Ascending",
+  DESCENDING: "Descending",
+};
+
+export const SortBy = {
+  DONOR_NAME: "Donor Name",
+  SEND_ON: "Send On",
+  EXPIRE_ON: "Expire On",
+  HOSPITAL_NAME: "Hospital Name",
+  LAST_DONATION: "Last Donation",
+  AGE: "Age",
+  BLOOD_GROUP: "Blood Group",
+};

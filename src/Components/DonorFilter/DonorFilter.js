@@ -2,12 +2,19 @@
 
 import React, { Component } from "react";
 import { Image, Text, TouchableOpacity, View, Slider } from "react-native";
-import { BloodGroups, GenderData } from "../../Utils/Constants/ChipsData";
+import {
+  BloodGroups,
+  GenderData,
+  SortByData,
+  SortByDonors,
+  SortTypeData,
+} from "../../Utils/Constants/ChipsData";
 import R from "../../Utils/R";
 import lodash from "lodash";
 import AppText from "../AppText/AppText";
 import ChipGroup from "../ChipGroup/ChipGroup";
 import Styles from "./styles";
+import AppTextInput from "../AppTextInput/AppTextInput";
 
 const MinimumAge = 18;
 const MaxiumAge = MinimumAge + 50;
@@ -21,10 +28,13 @@ export default class DonorFilter extends Component {
     super(props);
 
     this.state = {
-      expandFilter: false,
+      expandFilter: true,
       age: 21,
       gender: [],
       bloodGroup: [],
+      searchText: "",
+      sortBy: "",
+      sortType: "",
     };
   }
 
@@ -55,13 +65,16 @@ export default class DonorFilter extends Component {
   onGenderChange = (gender) => {
     const { gender: selectedGender } = this.state;
 
-    if (gender === selectedGender[0]) {
-      this.setState({ gender: [] });
-      this.updateFilters();
-      return;
+    let newGenders = [];
+
+    if (selectedGender.includes(gender)) {
+      newGenders = selectedGender.filter((gen) => gen !== gender);
+    } else {
+      // ... => spread operator
+      newGenders = [...selectedGender, gender];
     }
 
-    this.setState({ gender: [gender] });
+    this.setState({ gender: newGenders });
     this.updateFilters();
   };
 
@@ -82,8 +95,45 @@ export default class DonorFilter extends Component {
     this.updateFilters();
   };
 
+  onSortbyChange = (title) => {
+    const { sortBy } = this.state;
+
+    if (title === sortBy) {
+      this.setState({ sortBy: "" });
+      this.updateFilters();
+    } else {
+      this.setState({ sortBy: title });
+      this.updateFilters();
+    }
+  };
+
+  onSortTypeChange = (title) => {
+    const { sortType } = this.state;
+
+    if (title === sortType) {
+      this.setState({ sortType: "" });
+      this.updateFilters();
+    } else {
+      this.setState({ sortType: title });
+      this.updateFilters();
+    }
+  };
+
+  onSearchTextChange = (text) => {
+    this.setState({ searchText: text });
+    this.updateFilters();
+  };
+
   render() {
-    const { expandFilter, age, gender, bloodGroup } = this.state;
+    const {
+      expandFilter,
+      age,
+      gender,
+      bloodGroup,
+      sortBy,
+      sortType,
+      searchText,
+    } = this.state;
 
     return (
       <View style={Styles.containerStyle}>
@@ -97,7 +147,7 @@ export default class DonorFilter extends Component {
 
         {expandFilter && (
           <View>
-            <AppText>Age</AppText>
+            <AppText style={{ marginTop: 4, marginBottom: 10 }}>Age</AppText>
             <Slider
               value={age}
               maximumValue={MaxiumAge}
@@ -113,18 +163,48 @@ export default class DonorFilter extends Component {
               <AppText>{MaxiumAge}</AppText>
             </View>
 
-            <AppText>Gender</AppText>
+            <AppText style={{ marginTop: 4, marginBottom: 10 }}>Gender</AppText>
             <ChipGroup
               data={GenderData}
               selectedChips={gender}
               onSelected={this.onGenderChange}
             />
-            <AppText>Blood Group</AppText>
+
+            <AppText style={{ marginTop: 4, marginBottom: 10 }}>
+              Blood Group
+            </AppText>
             <ChipGroup
               scrollEnabled
               data={BloodGroups}
               selectedChips={bloodGroup}
               onSelected={this.onBloodGroupChange}
+            />
+
+            <AppText style={{ marginTop: 4, marginBottom: 10 }}>
+              Sort by
+            </AppText>
+            <ChipGroup
+              scrollEnabled
+              data={SortByDonors}
+              selectedChips={sortBy}
+              onSelected={this.onSortbyChange}
+            />
+
+            <AppText style={{ marginTop: 4, marginBottom: 10 }}>
+              Sort Type
+            </AppText>
+            <ChipGroup
+              scrollEnabled
+              data={SortTypeData}
+              selectedChips={sortType}
+              onSelected={this.onSortTypeChange}
+            />
+
+            <AppText style={{ marginTop: 4, marginBottom: 10 }}>Search</AppText>
+            <AppTextInput
+              placeholder="Search by name"
+              onChangeText={this.onSearchTextChange}
+              value={searchText}
             />
           </View>
         )}

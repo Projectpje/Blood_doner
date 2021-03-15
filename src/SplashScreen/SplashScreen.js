@@ -7,6 +7,7 @@ import ScreenContainer from "../Components/ScreenContainer/ScreenContainer";
 import R from "../Utils/R";
 import Styles from "./styles";
 import { USER_TYPE } from "../Utils/Enums";
+import firebase from "firebase";
 
 @inject("userStore")
 @observer

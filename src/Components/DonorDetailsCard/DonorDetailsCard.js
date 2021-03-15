@@ -221,7 +221,18 @@ export default function DonorDetailsCard(props) {
             )}
           </View>
 
-          <View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          >
+            <View style={Styles.bloodGroupContainer}>
+              <AppText style={Styles.bloodGroupTextStyle}>{bloodGroup}</AppText>
+            </View>
+
             <TouchableOpacity
               hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
               onPress={() => {
@@ -231,15 +242,16 @@ export default function DonorDetailsCard(props) {
               }}
             >
               <AppText
-                containerStyle={{ justifyContent: "center", marginBottom: 5 }}
+                containerStyle={{
+                  justifyContent: "center",
+                  marginBottom: 5,
+                  marginTop: 10,
+                }}
                 type="small"
               >
                 {"View Profile >>>"}
               </AppText>
             </TouchableOpacity>
-            <View style={Styles.bloodGroupContainer}>
-              <AppText style={Styles.bloodGroupTextStyle}>{bloodGroup}</AppText>
-            </View>
           </View>
         </View>
 

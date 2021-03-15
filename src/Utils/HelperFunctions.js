@@ -41,7 +41,11 @@ export const sendPushNotification = ({
   onSuccess,
   onFailure,
 }) => {
-  const body = tokens.map((token) => {
+  const body = tokens?.map((token) => {
+    if (!token) {
+      return;
+    }
+
     return {
       to: token,
       title,

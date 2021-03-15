@@ -33,7 +33,9 @@ export default class TutorialScreen extends Component {
 
   render() {
     const { currentPage } = this.state;
-    const { navigation } = this.props;
+    const { navigation, route } = this.props;
+
+    const isFromApp = route?.params?.isFromApp ?? false;
 
     return (
       <ScreenContainer>
@@ -50,7 +52,7 @@ export default class TutorialScreen extends Component {
             />
           </View>
 
-          <View key={"1"}>
+          <View key={"2"}>
             <Tutorial
               label="Page 1"
               logo={R.Images.EMPTY_COMPONENT}
@@ -58,7 +60,7 @@ export default class TutorialScreen extends Component {
             />
           </View>
 
-          <View key={"1"}>
+          <View key={"3"}>
             <Tutorial
               label="Page 1"
               logo={R.Images.EMPTY_COMPONENT}
@@ -76,11 +78,15 @@ export default class TutorialScreen extends Component {
         >
           <AppText
             onPress={() => {
-              R.HelperFunctions.resetStack(navigation, "Login");
+              if (isFromApp) {
+                navigation.goBack();
+              } else {
+                R.HelperFunctions.resetStack(navigation, "Login");
+              }
             }}
           >
             {/* Show login button when we are on last page. */}
-            {currentPage == 2 ? "Login" : "Skip"}
+            {currentPage == 2 ? (isFromApp ? "Continue" : "Login") : "Skip"}
           </AppText>
         </View>
       </ScreenContainer>

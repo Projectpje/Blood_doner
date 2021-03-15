@@ -1,7 +1,14 @@
 /** @format */
 
 import React, { Component } from "react";
-import { FlatList, ScrollView, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import firebase from "firebase";
 import moment from "moment";
 import AppText from "../../Components/AppText/AppText";
@@ -12,7 +19,7 @@ import { DATABASE_NODES, REQUEST_STATUS } from "../../Utils/Enums";
 import R from "../../Utils/R";
 import NotificationCard from "../../Components/NotificationCard/NotificationCard";
 import EmptyListComponent from "../../Components/EmptyListComponent/EmptyListComponent";
-
+import Styles from "./styles";
 export default class DonorProfile extends Component {
   constructor(props) {
     super(props);
@@ -102,33 +109,109 @@ export default class DonorProfile extends Component {
 
     return (
       <ScreenContainer>
-        <ScrollView contentContainerStyle={{ alignItems: "center" }}>
-          <Avatar
-            name={donor?.name}
-            style={{ width: 150, height: 150, borderRadius: 75 }}
-          />
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 20,
+            }}
+          >
+            <TouchableOpacity onPress={this.props.navigation.goBack}>
+              <Image source={R.Images.BACK} style={{ width: 16, height: 16 }} />
+            </TouchableOpacity>
+            <AppText
+              style={{ width: "100%", textAlign: "center" }}
+              type="heading"
+            >
+              Donor Profile
+            </AppText>
+          </View>
 
-          <AppText style={{ marginTop: 20 }}>Name: {donor?.name}</AppText>
-          <AppText>Blood group: {donor?.bloodGroup}</AppText>
-          <AppText>Email Id: {donor?.emailId}</AppText>
-          <AppText>Phone Number: {donor?.phoneNumber}</AppText>
+          <View style={{ flexDirection: "row" }}>
+            <Avatar name={donor?.name} style={Styles.avatarStyle} />
 
-          <AppText style={{ marginTop: 30 }}>
-            Smoking: {donor?.donorInfo?.smoke}
-          </AppText>
-          <AppText>Drinking: {donor?.donorInfo?.drink}</AppText>
-          <AppText>
-            Last Donation: {donor?.donorInfo?.lastBloodDonation}
-          </AppText>
+            <View>
+              <View style={{ flexDirection: "row", marginTop: 20 }}>
+                <AppText type="small" style={Styles.labelStyle}>
+                  Name:
+                </AppText>
+                <AppText>{donor?.name}</AppText>
+              </View>
 
-          <AppText type="heading" style={{ marginTop: 30 }}>
+              <View style={{ flexDirection: "row" }}>
+                <AppText type="small" style={Styles.labelStyle}>
+                  Blood group:
+                </AppText>
+                <AppText>{donor?.bloodGroup}</AppText>
+              </View>
+
+              <View style={{ flexDirection: "row" }}>
+                <AppText type="small" style={Styles.labelStyle}>
+                  Email Id:
+                </AppText>
+                <AppText>{donor?.emailId}</AppText>
+              </View>
+
+              <View style={{ flexDirection: "row" }}>
+                <AppText type="small" style={Styles.labelStyle}>
+                  Phone No:
+                </AppText>
+                <AppText>{donor?.phoneNumber}</AppText>
+              </View>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              marginTop: 20,
+            }}
+          >
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <AppText type="small">Smoking</AppText>
+              <AppText>{donor?.donorInfo?.smoke}</AppText>
+            </View>
+
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <AppText type="small">Drinking</AppText>
+              <AppText>{donor?.donorInfo?.drink}</AppText>
+            </View>
+
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <AppText type="small">Donation History</AppText>
+              <AppText>{donor?.donorInfo?.lastBloodDonation}</AppText>
+            </View>
+          </View>
+
+          <AppText
+            type="heading"
+            style={{ marginTop: 30, paddingHorizontal: 20 }}
+          >
             Donation History
           </AppText>
 
-          <View style={{ padding: 10, paddingBottom: 20, flex: 1 }}>
+          <View
+            style={{
+              padding: 10,
+              paddingBottom: 20,
+              flex: 1,
+            }}
+          >
             {completedNotification?.map(this.renderCard)}
 
-            {completedNotification?.length === 0 && <EmptyListComponent />}
+            {completedNotification?.length === 0 && (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <EmptyListComponent />
+              </View>
+            )}
           </View>
         </ScrollView>
       </ScreenContainer>

@@ -1,6 +1,13 @@
 /** @format */
 
-import { GENDER, BLOOD_GROUP, RHESUS_FACTOR } from "../Enums";
+import {
+  GENDER,
+  BLOOD_GROUP,
+  RHESUS_FACTOR,
+  REQUEST_STATUS,
+  SortBy,
+  SortType,
+} from "../Enums";
 import * as Images from "../Images";
 
 export const BloodGroups = [
@@ -42,6 +49,48 @@ export const GenderData = [
     title: GENDER.OTHER,
     logo: Images.Gender.Other,
   },
+];
+
+export const RequestTypeData = [
+  {
+    title: "All",
+  },
+  {
+    title: REQUEST_STATUS.ACCEPTED,
+  },
+  {
+    title: REQUEST_STATUS.PENDING,
+  },
+  {
+    title: REQUEST_STATUS.COMPLETED,
+  },
+  {
+    title: REQUEST_STATUS.CANCELLED,
+  },
+  {
+    title: REQUEST_STATUS.EXPIRED,
+  },
+  {
+    title: REQUEST_STATUS.REJECTED,
+  },
+];
+
+export const SortTypeData = [
+  { title: SortType.ASCENDING },
+  { title: SortType.DESCENDING },
+];
+
+export const SortByData = [
+  { title: SortBy.DONOR_NAME },
+  { title: SortBy.SEND_ON },
+  { title: SortBy.EXPIRE_ON },
+  { title: SortBy.HOSPITAL_NAME },
+];
+
+export const SortByDonors = [
+  { title: SortBy.DONOR_NAME },
+  { title: SortBy.LAST_DONATION },
+  { title: SortBy.BLOOD_GROUP },
 ];
 
 export const BloodRequirementUrgency = [

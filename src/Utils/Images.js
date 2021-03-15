@@ -22,3 +22,7 @@ export const AGE = require("../../assets/adult.png");
 export const FILTERS = require("../../assets/filter.png");
 export const TICK = require("../../assets/tick.png");
 export const EMPTY_COMPONENT = require("../../assets/empty.png");
+export const BACK = require("../../assets/back.png");
+export const PROFILE = require("../../assets/profile.png");
+export const PIE_CHART = require("../../assets/pie-chart.png");
+export const INFO = require("../../assets/info.png");

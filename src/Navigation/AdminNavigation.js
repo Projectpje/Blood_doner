@@ -27,7 +27,7 @@ const BottomTab = () => {
           tabBarIcon: () => {
             return (
               <Image
-                source={R.Images.UserType.Donor}
+                source={R.Images.UserType.Hospital}
                 style={{ width: 16, height: 16, resizeMode: "contain" }}
               />
             );
@@ -59,7 +59,7 @@ const BottomTab = () => {
           tabBarIcon: () => {
             return (
               <Image
-                source={R.Images.UserType.Donor}
+                source={R.Images.PIE_CHART}
                 style={{ width: 16, height: 16, resizeMode: "contain" }}
               />
             );
@@ -74,7 +74,7 @@ const BottomTab = () => {
           tabBarIcon: () => {
             return (
               <Image
-                source={R.Images.UserType.Donor}
+                source={R.Images.PROFILE}
                 style={{ width: 16, height: 16, resizeMode: "contain" }}
               />
             );

@@ -32,7 +32,7 @@ export default class NotificationSenderView extends Component {
     };
   }
 
-  notificationSendSuccess = () => {
+  notificationSendSuccess = async () => {
     const {
       users,
       userStore: {
@@ -56,9 +56,9 @@ export default class NotificationSenderView extends Component {
     const expiryDate = moment().add(expireAfter, "days").toString();
 
     // Composes message for each user
-    users.forEach((user) => {
+    users.forEach(async (user) => {
       const { uid, name } = user;
-      const notificationUUID = Random.getRandomBytes(20).join("");
+      const notificationUUID = await Random.getRandomBytes(20).join("");
 
       const notificaitonData = {
         notificationId: notificationUUID,

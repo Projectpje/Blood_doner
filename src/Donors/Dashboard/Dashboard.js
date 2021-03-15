@@ -1,14 +1,14 @@
 /** @format */
 
 import React, { Component } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Image, TouchableOpacity, View } from "react-native";
 import { inject, observer } from "mobx-react";
 import firebase from "firebase";
 import ScreenContainer from "../../Components/ScreenContainer/ScreenContainer";
 import R from "../../Utils/R";
 import Styles from "./styles";
 import AppText from "../../Components/AppText/AppText";
-import { DATABASE_NODES, REQUEST_STATUS } from "../../Utils/Enums";
+import { DATABASE_NODES, REQUEST_STATUS, SortType } from "../../Utils/Enums";
 import NotificationCard from "../../Components/NotificationCard/NotificationCard";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import * as Location from "expo-location";
@@ -95,6 +95,25 @@ export default class Dashboard extends Component {
 
     return (
       <ScreenContainer loading={loading}>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate("TutorialScreen", {
+              isFromApp: true,
+            });
+          }}
+        >
+          <Image
+            source={R.Images.INFO}
+            style={{
+              width: 16,
+              height: 16,
+              alignSelf: "flex-end",
+              paddingHorizontal: 20,
+            }}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+
         <View style={{ flexDirection: "row" }}>
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -133,6 +152,7 @@ export default class Dashboard extends Component {
         >
           <View key="1" style={{ padding: 10 }}>
             <FlatList
+              contentContainerStyle={{ flex: 1 }}
               data={upcomingNotification}
               ListEmptyComponent={() => {
                 return (
@@ -154,6 +174,7 @@ export default class Dashboard extends Component {
 
           <View key="2" style={{ padding: 10 }}>
             <FlatList
+              contentContainerStyle={{ flex: 1 }}
               data={pendingNotification}
               ListEmptyComponent={() => {
                 return (

@@ -15,7 +15,7 @@ import AppText from "../../Components/AppText/AppText";
 import { Value } from "react-native-reanimated";
 import DonorDetailsCard from "../../Components/DonorDetailsCard/DonorDetailsCard";
 import Styles from "./styles";
-import { DATABASE_NODES, USER_TYPE } from "../../Utils/Enums";
+import { DATABASE_NODES, SortBy, SortType, USER_TYPE } from "../../Utils/Enums";
 import R from "../../Utils/R";
 import DonorFilter from "../../Components/DonorFilter/DonorFilter";
 import { inject, observer } from "mobx-react";
@@ -139,10 +139,11 @@ export default class AllDonorsList extends Component {
       age: filterAge,
       gender: filterGender,
       bloodGroup: filterBloodGroups,
+      searchText,
+      sortType,
+      sortBy,
     } = values;
     const { donorsList } = this.state;
-
-    console.log("filters", values, donorsList);
 
     let newDonorList = [];
 
@@ -175,6 +176,35 @@ export default class AllDonorsList extends Component {
         return filterBloodGroups.includes(bloodGroup);
       });
     }
+
+    if (searchText?.length !== 0) {
+      newDonorList = [...newDonorList].filter((value) =>
+        value.name?.toLowerCase().includes(searchText?.toLowerCase())
+      );
+    }
+
+
+    if(sortBy) {
+      newDonorList = [...newDonorList].sort((donor1, donor2) => {
+        switch(sortBy) {
+          case SortBy.DONOR_NAME:
+            return donor1.name > donor2.name;
+
+            case SortBy.LAST_DONATION:
+              return moment(donor1.donorInfo?.lastBloodDonation) > moment(donor2.donorInfo?.lastBloodDonation)
+
+
+              case SortBy.BLOOD_GROUP:
+                return donor1.bloodGroup > donor2.bloodGroup;
+        }
+      })
+    }
+
+
+    if(sortType === SortType.DESCENDING) {
+      newDonorList.reverse();
+    }
+
 
     this.setState({ filteredList: newDonorList });
   };

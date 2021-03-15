@@ -39,7 +39,7 @@ export default class AppTextInput extends Component {
 
   // Capture the text input onBlur event, applies the validation and show error (if any),
   // if also pass the event to the parent compnent when onBlur props is provided.
-  onBlur = () => {
+  applyValidationOnBlur = () => {
     const {
       onBlur,
       isNonEmpty,
@@ -103,7 +103,7 @@ export default class AppTextInput extends Component {
           autoFocus={false}
           placeholderTextColor="#555555"
           style={[Styles.containerStyle, style]}
-          onBlur={this.onBlur}
+          onBlur={this.applyValidationOnBlur}
           onChangeText={this.onChangeText}
           {...rest}
         />

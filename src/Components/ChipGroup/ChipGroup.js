@@ -44,7 +44,7 @@ export default function ChipGroup(props) {
       >
         {data.map((value, index) => {
           const { title } = value;
-          const isSelected = selectedChips.includes(title);
+          const isSelected = selectedChips?.includes(title);
 
           return (
             <View

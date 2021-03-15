@@ -61,6 +61,13 @@ export default class Login extends Component {
 
     this.setState({ loading: true });
 
+    firebase.auth().onAuthStateChanged((state) => {
+      console.log("state is", state);
+      const currentUser = firebase.auth().currentUser;
+
+      console.log("current user is", currentUser);
+    });
+
     firebase
       .auth()
       .signInWithEmailAndPassword(emailId, password)

@@ -40,7 +40,6 @@ export default function ScreenContainer(props) {
               style={{
                 width: 100,
                 height: 100,
-                resizeMode: "contain",
               }}
             />
             <AppText style={{ marginTop: 20 }}>Loading information</AppText>

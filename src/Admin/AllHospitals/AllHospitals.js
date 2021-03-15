@@ -9,6 +9,7 @@ import HospitalDetailsCard from "../../Components/HospitalDetailsCard/HospitalDe
 import R from "../../Utils/R";
 import EmptyListComponent from "../../Components/EmptyListComponent/EmptyListComponent";
 import AppButton from "../../Components/AppButton/AppButton";
+import AppText from "../../Components/AppText/AppText";
 
 export default class AllHospitals extends Component {
   constructor(props) {
@@ -61,7 +62,14 @@ export default class AllHospitals extends Component {
 
     return (
       <ScreenContainer loading={loading}>
-        <View style={{ padding: 10 }}>
+        <View style={{ padding: 10, flex: 1 }}>
+          <AppText
+            type="heading"
+            style={{ textAlign: "center", width: "100%", marginBottom: 20 }}
+          >
+            All Hospitals
+          </AppText>
+
           <FlatList
             ListEmptyComponent={() => {
               return <EmptyListComponent loading={loading} />;
