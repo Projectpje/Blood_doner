@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from "react";
-import { SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
+import { Alert, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 import StepIndicator from "react-native-step-indicator";
 import AppTextInput from "../Components/AppTextInput/AppTextInput";
 import AppButton from "../Components/AppButton/AppButton";
@@ -67,20 +67,12 @@ export default class Registration extends Component {
   onQuestionnaireCompleted = () => {
     const { navigation } = this.props;
     const { userId } = this.state;
+    
+    const currentUser = firebase.auth().currentUser;
+    currentUser.sendEmailVerification();
 
-    // Fetch donor infor from firebase and save into userStore
-    firebase
-      .database()
-      .ref(`${DATABASE_NODES.DONORS}/${userId}`)
-      .once("value", (data) => {
-        const response = data.val();
-
-        if (response) {
-          const { navigation, userStore } = this.props;
-          userStore.setUser(response);
-          navigation.navigate("Donor");
-        }
-      });
+    Alert.alert("Attention", "A verification email has be send on your email id. Please verify to continue.");
+    navigation.goBack();
   };
 
   // Once hospital profile is completed, navigate to hospital dashboard
@@ -88,19 +80,13 @@ export default class Registration extends Component {
     const { navigation } = this.props;
     const { userId } = this.state;
 
-    // Fetch Hospital info from the firebase and save into userStore
-    firebase
-      .database()
-      .ref(`${DATABASE_NODES.HOSPITAL}/${userId}`)
-      .once("value", (data) => {
-        const response = data.val();
+    console.log("user id is", userId);
 
-        if (response) {
-          const { navigation, userStore } = this.props;
-          userStore.setUser(response);
-          navigation.navigate("Hospital");
-        }
-      });
+    const currentUser = firebase.auth().currentUser;
+    currentUser.sendEmailVerification();
+
+    Alert.alert("Attention", "A verification email has be send on your email id. Please verify to continue.");
+    navigation.goBack();
   };
 
   render() {

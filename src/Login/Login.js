@@ -19,7 +19,7 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      emailId: "hospital1@gmail.com",
+      emailId: "nitishprasad33@gmail.com",
       password: "1234567890",
       loading: false,
     };
@@ -112,6 +112,23 @@ export default class Login extends Component {
       .once("value", (data) => {
         const response = data.val();
         this.setState({ loading: false });
+
+        const {emailVerified, userType } = response;
+        const currentUser = firebase.auth().currentUser;
+
+        const isUserEmailVerified = currentUser.emailVerified;
+
+
+        if(!isUserEmailVerified && userType !== USER_TYPE.ADMIN) {
+            alert("Email id not verified. Please verify to continue using app");
+            return;
+        }
+
+        if(!emailVerified && isUserEmailVerified) {
+            firebase.database().ref(`${node}/${uid}`).update({
+              emailVerified: true
+            })
+        };
 
         if (response) {
           const { navigation, userStore } = this.props;

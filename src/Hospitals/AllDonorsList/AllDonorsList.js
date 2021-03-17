@@ -101,7 +101,12 @@ export default class AllDonorsList extends Component {
 
         for (const userId in response) {
           const user = response[userId];
-          donorsList.push(user);
+
+          const {emailVerified} = user;
+
+          if(emailVerified) {
+            donorsList.push(user);
+          }
         }
 
         this.setState({ donorsList, filteredList: donorsList, loading: false });
@@ -177,34 +182,34 @@ export default class AllDonorsList extends Component {
       });
     }
 
+
     if (searchText?.length !== 0) {
       newDonorList = [...newDonorList].filter((value) =>
         value.name?.toLowerCase().includes(searchText?.toLowerCase())
       );
     }
 
-
-    if(sortBy) {
+    if (sortBy) {
       newDonorList = [...newDonorList].sort((donor1, donor2) => {
-        switch(sortBy) {
+        switch (sortBy) {
           case SortBy.DONOR_NAME:
             return donor1.name > donor2.name;
 
-            case SortBy.LAST_DONATION:
-              return moment(donor1.donorInfo?.lastBloodDonation) > moment(donor2.donorInfo?.lastBloodDonation)
+          case SortBy.LAST_DONATION:
+            return (
+              moment(donor1.donorInfo?.lastBloodDonation) >
+              moment(donor2.donorInfo?.lastBloodDonation)
+            );
 
-
-              case SortBy.BLOOD_GROUP:
-                return donor1.bloodGroup > donor2.bloodGroup;
+          case SortBy.BLOOD_GROUP:
+            return donor1.bloodGroup > donor2.bloodGroup;
         }
-      })
+      });
     }
 
-
-    if(sortType === SortType.DESCENDING) {
+    if (sortType === SortType.DESCENDING) {
       newDonorList.reverse();
     }
-
 
     this.setState({ filteredList: newDonorList });
   };
@@ -260,6 +265,7 @@ export default class AllDonorsList extends Component {
             style={{ marginTop: 20, flex: 1 }}
             contentContainerStyle={{
               paddingBottom: multiSelectEnabled ? 200 : 10,
+              flex: filteredList.length > 0 ?  0 : 1,
             }}
             data={filteredList}
             renderItem={this.renderItem}

@@ -28,7 +28,7 @@ export default class DonorFilter extends Component {
     super(props);
 
     this.state = {
-      expandFilter: true,
+      expandFilter: false,
       age: 21,
       gender: [],
       bloodGroup: [],
