@@ -35,11 +35,28 @@ export default class RegistrationForm extends Component {
     this.setState({ confirmPassword: text });
   };
 
+  ValidateEmail = (mail) => {
+    if (
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        mail
+      )
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   validate = () => {
     const { emailId, password, confirmPassword } = this.state;
 
     if (!R.HelperFunctions.IsNonEmptyString(emailId)) {
       this.showAlert("Please enter email id");
+      return;
+    }
+
+    if (!this.ValidateEmail(emailId)) {
+      this.showAlert("Invalid email address. Please check it");
       return;
     }
 
@@ -49,7 +66,9 @@ export default class RegistrationForm extends Component {
     }
 
     if (password !== confirmPassword) {
-      this.showAlert("Password length should be atleast 6");
+      this.showAlert(
+        "Password donot match. Please enter your password correctly"
+      );
       return;
     }
 
@@ -82,7 +101,7 @@ export default class RegistrationForm extends Component {
 
         this.saveDetailsInDatabase(uid, emailVerified);
       })
-      .catch(function (error) {
+      .catch((error) => {
         this.setState({ loading: false });
         // Handle Errors here.
         var errorCode = error.code;

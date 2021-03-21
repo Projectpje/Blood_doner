@@ -1,7 +1,14 @@
 /** @format */
 
 import React, { Component } from "react";
-import { Alert, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import StepIndicator from "react-native-step-indicator";
 import AppTextInput from "../Components/AppTextInput/AppTextInput";
 import AppButton from "../Components/AppButton/AppButton";
@@ -34,6 +41,8 @@ export default class Registration extends Component {
       questionnaire: false,
       currentStep: 0,
     };
+
+    firebase.auth().signOut();
   }
 
   // When one of donor or hospital notification type selected
@@ -43,7 +52,7 @@ export default class Registration extends Component {
     this.scrollRef?.scrollTo({ x: R.Dimension.width, y: 0, animated: true });
   };
 
-  // In the second step, create a user with email id and passowrd, 
+  // In the second step, create a user with email id and passowrd,
   onAccountCreated = (emailId, userId) => {
     this.setState({ emailId, userId, currentStep: 2 });
     this.scrollRef?.scrollTo({
@@ -67,11 +76,16 @@ export default class Registration extends Component {
   onQuestionnaireCompleted = () => {
     const { navigation } = this.props;
     const { userId } = this.state;
-    
+
     const currentUser = firebase.auth().currentUser;
     currentUser.sendEmailVerification();
 
-    Alert.alert("Attention", "A verification email has be send on your email id. Please verify to continue.");
+    firebase.auth().signOut();
+
+    Alert.alert(
+      "Attention",
+      "A verification email has be send on your email id. Please verify to continue."
+    );
     navigation.goBack();
   };
 
@@ -85,7 +99,12 @@ export default class Registration extends Component {
     const currentUser = firebase.auth().currentUser;
     currentUser.sendEmailVerification();
 
-    Alert.alert("Attention", "A verification email has be send on your email id. Please verify to continue.");
+    firebase.auth().signOut();
+
+    Alert.alert(
+      "Attention",
+      "A verification email has be send on your email id. Please verify to continue."
+    );
     navigation.goBack();
   };
 

@@ -113,22 +113,21 @@ export default class Login extends Component {
         const response = data.val();
         this.setState({ loading: false });
 
-        const {emailVerified, userType } = response;
+        const { emailVerified, userType } = response;
         const currentUser = firebase.auth().currentUser;
 
         const isUserEmailVerified = currentUser.emailVerified;
 
-
-        if(!isUserEmailVerified && userType !== USER_TYPE.ADMIN) {
-            alert("Email id not verified. Please verify to continue using app");
-            return;
+        if (!isUserEmailVerified && userType !== USER_TYPE.ADMIN) {
+          alert("Email id not verified. Please verify to continue using app");
+          return;
         }
 
-        if(!emailVerified && isUserEmailVerified) {
-            firebase.database().ref(`${node}/${uid}`).update({
-              emailVerified: true
-            })
-        };
+        if (!emailVerified && isUserEmailVerified) {
+          firebase.database().ref(`${node}/${uid}`).update({
+            emailVerified: true,
+          });
+        }
 
         if (response) {
           const { navigation, userStore } = this.props;
@@ -199,7 +198,13 @@ export default class Login extends Component {
             </View>
           </KeyboardAwareScrollView>
 
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginBottom: 20,
+            }}
+          >
             <AppText
               style={{ textAlign: "center", color: "black", fontWeight: "700" }}
               type="small"
