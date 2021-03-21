@@ -75,8 +75,8 @@ export default class RegistrationForm extends Component {
     this.onSubmit();
   };
 
-  showAlert = (message) => {
-    Alert.alert("Error", message);
+  showAlert = (message, title = "Error") => {
+    Alert.alert(title, message);
   };
 
   onSubmit = () => {
@@ -142,6 +142,11 @@ export default class RegistrationForm extends Component {
         onAccountCreated?.(emailId, uid);
         this.setState({ loading: false });
       });
+
+    this.showAlert(
+      "Account created successfully. Proceed to fill your details",
+      "Success"
+    );
   };
 
   render() {
