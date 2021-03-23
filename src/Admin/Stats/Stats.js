@@ -37,6 +37,8 @@ export default class Stats extends Component {
       .on("value", (value) => {
         const data = value.val();
 
+        console.log("data is", data);
+
         let accepted = 0,
           cancelled = 0,
           completed = 0,
@@ -59,14 +61,19 @@ export default class Stats extends Component {
               switch (status) {
                 case REQUEST_STATUS.ACCEPTED:
                   accepted += 1;
+                  break;
                 case REQUEST_STATUS.CANCELLED:
                   cancelled += 1;
+                  break;
                 case REQUEST_STATUS.COMPLETED:
                   completed += 1;
+                  break;
                 case REQUEST_STATUS.PENDING:
                   pending += 1;
+                  break;
                 case REQUEST_STATUS.REJECTED:
                   rejected += 1;
+                  break;
               }
             }
           }

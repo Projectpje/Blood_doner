@@ -161,7 +161,6 @@ UI Design
 
 Coding Style
     1. Follows camelCase naming convension
-    2. Constants and Enums are defined in all caps
-    3. 
+    2. Constants and Enums are defined in all caps 
 
 

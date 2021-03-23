@@ -28,7 +28,7 @@ export default function NotificationCard({ item, isDonor }) {
     expireOn,
     message,
     hospitalInfo,
-  } = item;
+  } = item; // notification node from firebase
 
   const borderColor = R.HelperFunctions.GetStatusColor(status);
   const { hospitalId, address } = hospitalInfo;
@@ -107,7 +107,7 @@ export default function NotificationCard({ item, isDonor }) {
       )}
 
       {/* If notification status is accpeted, then show link to open google map with hospital name */}
-      {status === REQUEST_STATUS.ACCEPTED && isDonor && (
+      {(status === REQUEST_STATUS.ACCEPTED || status === REQUEST_STATUS.PENDING) && isDonor && (
         <AppText
           style={{ padding: 10, marginTop: -20, color: "blue" }}
           onPress={() => {
@@ -124,6 +124,10 @@ export default function NotificationCard({ item, isDonor }) {
 
       <AppText style={{ padding: 10, marginTop: -10 }}>
         Expire: {R.HelperFunctions.Humanize(expireOn)}
+      </AppText>
+
+      <AppText style={{ padding: 10, marginTop: -10 }}>
+        Dontation date: {R.HelperFunctions.FormatDate(expireOn)}
       </AppText>
 
       {message.length > 0 && !isExpired && (

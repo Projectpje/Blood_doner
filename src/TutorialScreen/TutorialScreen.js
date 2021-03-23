@@ -67,6 +67,7 @@ export default class TutorialScreen extends Component {
               description="Description 1"
             />
           </View>
+          
         </ViewPager>
 
         <View

@@ -71,6 +71,9 @@ export default class AllHospitals extends Component {
           </AppText>
 
           <FlatList
+            contentContainerStyle={{
+              flex: hospitalList.length > 0 ?  0 : 1,
+            }}
             ListEmptyComponent={() => {
               return <EmptyListComponent loading={loading} />;
             }}

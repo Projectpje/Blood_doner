@@ -6,6 +6,8 @@ import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 import firebase from "firebase";
 import { DATABASE_NODES, USER_TYPE } from "../../Utils/Enums";
+import { GetUserNodeFromUserType } from "../../Utils/HelperFunctions";
+import R from "../../Utils/R";
 
 @inject("userStore")
 @observer
@@ -63,10 +65,7 @@ export default class PushNotificationContainer extends Component {
       });
     }
 
-    const node =
-      userType === USER_TYPE.HOSPITAL
-        ? DATABASE_NODES.HOSPITAL
-        : DATABASE_NODES.DONORS;
+    const node = GetUserNodeFromUserType(userType);
 
     firebase.database().ref(`${node}/${userId}/token`).set(token);
   };
