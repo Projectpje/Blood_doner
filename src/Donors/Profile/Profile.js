@@ -120,7 +120,7 @@ export default class Profile extends Component {
 
   onChangePassword = () => {
     const { emailId } = this.state;
-    firebase.auth().sendPasswordResetEmail("nitishprasad33@gmail.com");
+    firebase.auth().sendPasswordResetEmail(emailId);
 
     Alert.alert(
       "Success",
