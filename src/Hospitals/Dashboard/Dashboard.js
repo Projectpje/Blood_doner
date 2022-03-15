@@ -13,10 +13,14 @@ import R from "../../Utils/R";
 import EmptyListComponent from "../../Components/EmptyListComponent/EmptyListComponent";
 import App from "../../../App";
 import HospitalFilter from "../../Components/HospitalFilter/HospitalFilter";
+import ViewPager from "@react-native-community/viewpager";
+import BroadcastRequestDashboard from "../BroadcastRequestDashboard/BroadcastRequestDashboard";
 
 @inject("userStore")
 @observer
 export default class Dashboard extends Component {
+  pagerRef = null;
+
   constructor(props) {
     super(props);
 
@@ -30,6 +34,7 @@ export default class Dashboard extends Component {
         sortBy: SortBy.SEND_ON,
         sortType: SortType.ASCENDING,
         searchText: "",
+        currentPage: 0,
       },
     };
   }
@@ -134,43 +139,104 @@ export default class Dashboard extends Component {
     });
   };
 
+  onPageIndexChange = ({ nativeEvent }) => {
+    const { position } = nativeEvent;
+
+    this.setState({ selectedIndex: position });
+  };
+  
   render() {
-    const { filteredList, loading, filters } = this.state;
+    const { filteredList, loading, filters, selectedIndex = 0 } = this.state;
 
     return (
       <ScreenContainer loading={loading}>
         <View style={{ flex: 1, padding: 10 }}>
-          <AppText
-            type="heading"
-            style={{ textAlign: "center", width: "100%", marginBottom: 10 }}
+          <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AppText
+                onPress={() => {
+                  this.pagerRef.setPage(0);
+                }}
+                style={{ color: selectedIndex === 0 ? "red" : "white" }}
+              >
+                Direct Request
+              </AppText>
+            </View>
+
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AppText
+                style={{ color: selectedIndex === 1 ? "red" : "white" }}
+                onPress={() => {
+                  this.pagerRef.setPage(1);
+                }}
+              >
+                Broadcast Request
+              </AppText>
+            </View>
+          </View>
+
+          <ViewPager
+            ref={(ref) => {
+              this.pagerRef = ref;
+            }}
+            style={{ flex: 1 }}
+            initialPage={0}
+            onPageSelected={this.onPageIndexChange}
           >
-            All Requests
-          </AppText>
+            <View key={"ref1"}>
+              <HospitalFilter
+                filters={filters}
+                onFilterUpdate={this.onFilterUpdate}
+              />
 
-          <HospitalFilter
-            filters={filters}
-            onFilterUpdate={this.onFilterUpdate}
-          />
+              <FlatList
+                style={{ height: "100%", marginTop: 20 }}
+                contentContainerStyle={{
+                  flex: filteredList?.length > 0 ? 0 : 1,
+                }}
+                data={filteredList}
+                ListEmptyComponent={() => {
+                  return (
+                    <EmptyListComponent
+                      label="No request sent."
+                      loading={loading}
+                    />
+                  );
+                }}
+                renderItem={this.renderItems}
+                ItemSeparatorComponent={this.renderSeparator}
+              />
+            </View>
 
-          <FlatList
-            style={{ height: "100%", marginTop: 20 }}
-            contentContainerStyle={{
-              flex: filteredList?.length > 0 ? 0 : 1,
-            }}
-            data={filteredList}
-            ListEmptyComponent={() => {
-              return (
-                <EmptyListComponent
-                  label="No request sent."
-                  loading={loading}
-                />
-              );
-            }}
-            renderItem={this.renderItems}
-            ItemSeparatorComponent={this.renderSeparator}
-          />
+            <View key={"ref2"}>
+              <BroadcastRequestDashboard userStore={this.props.userStore} />
+            </View>
+          </ViewPager>
         </View>
       </ScreenContainer>
     );
   }
 }
+
+// Tech stack is : React Native Framework (Managed Flow or using expo)
+/**
+ *    Managed Flow :- using expo
+ *    Bare Flow :- using cli command
+ *
+ * For Navigation
+ *    using library: react-native-navigation (most popular library)
+ *
+ *
+ */

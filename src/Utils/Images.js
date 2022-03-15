@@ -26,4 +26,5 @@ export const BACK = require("../../assets/back.png");
 export const PROFILE = require("../../assets/profile.png");
 export const PIE_CHART = require("../../assets/pie-chart.png");
 export const INFO = require("../../assets/info.png");
+export const BROADCAST = require("../../assets/broadcast.png");
 export const NewImage = "asdfsfd";

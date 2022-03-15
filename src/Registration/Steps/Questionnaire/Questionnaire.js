@@ -80,13 +80,8 @@ export default class Questionnaire extends Component {
   };
 
   validate = () => {
-    const {
-      smoke,
-      drink,
-      diseases,
-      lastBloodDonation,
-      lastAbroadVisit,
-    } = this.state;
+    const { smoke, drink, diseases, lastBloodDonation, lastAbroadVisit } =
+      this.state;
 
     const { userId, onQuestionnaireCompleted } = this.props;
 

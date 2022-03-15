@@ -48,7 +48,11 @@ export const DATABASE_NODES = {
   DONORINFO: "donorInfo",
   HOSPITALINFO: "hospitalInfo",
   HOSPITAL_NOTIFICATION: "hospital_notification",
+  HOSPITAL_BROADCAST: "hospital_broadcast",
+  BROADCAST_NOTIFICATION: "broadcast_notification",
   DONOR_NOTIFICATION: "donor_notification",
+  COUNTRIES: "Locations/Countries",
+  CITIES: "Locations/",
 };
 
 export const REQUEST_STATUS = {

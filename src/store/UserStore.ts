@@ -11,6 +11,7 @@ class UserStore {
   @persist @observable userType;
   @persist @observable bloodGroup;
   @persist @observable city;
+  @persist @observable country;
   @persist @observable emailVerified;
   @persist @observable onboardingStep;
   @persist @observable phoneNumber;
@@ -26,6 +27,7 @@ class UserStore {
     this.userType = data.userType;
     this.bloodGroup = data.bloodGroup;
     this.city = data.city;
+    this.country = data.country;
     this.emailVerified = data.emailVerified;
     this.gender = data.gender;
     this.phoneNumber = data.phoneNumber;
@@ -41,6 +43,7 @@ class UserStore {
     this.userType = null;
     this.bloodGroup = null;
     this.city = null;
+    this.country = null;
     this.emailVerified = null;
     this.gender = null;
     this.phoneNumber = null;

@@ -94,8 +94,6 @@ export default class Registration extends Component {
     const { navigation } = this.props;
     const { userId } = this.state;
 
-    console.log("user id is", userId);
-
     const currentUser = firebase.auth().currentUser;
     currentUser.sendEmailVerification();
 

@@ -1,19 +1,23 @@
 /** @format */
 
 import React, { Component } from "react";
-import { Keyboard, Text, TextInput, View } from "react-native";
+import { Alert, Keyboard, Text, TextInput, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import firebase from "firebase";
 import AppButton from "../../../Components/AppButton/AppButton";
 import AppText from "../../../Components/AppText/AppText";
 import AppTextInput from "../../../Components/AppTextInput/AppTextInput";
 import ChipGroup from "../../../Components/ChipGroup/ChipGroup";
-import ScreenContainer from "../../../Components/ScreenContainer/ScreenContainer";
 import { DATABASE_NODES, GENDER } from "../../../Utils/Enums";
 import { IsNonEmptyString } from "../../../Utils/HelperFunctions";
 import R from "../../../Utils/R";
 import Styles from "./styles";
 import DateTimePicker from "react-native-modal-datetime-picker";
+import DropDownPickerWrapper from "../../../Components/DropDownPickerWrapper/DropDownPickerWrapper";
+import Spacer from "../../../Components/Spacer/Spacer";
+import { fetchCities, fetchCountries } from "../../../Utils/API";
+import CountrySelector from "../../../Components/CountrySelector/CountrySelector";
+import CitySelector from "../../../Components/CitySelector/CitySelector";
 
 export default class DonorInfo extends Component {
   constructor(props) {
@@ -22,12 +26,13 @@ export default class DonorInfo extends Component {
     this.state = {
       name: "",
       phoneNumber: "",
-      city: "",
       bloodGroup: "",
       gender: "",
       loading: false,
       dobPicker: false,
-      dob: ""
+      dob: "",
+      selectedCountry: "",
+      selectedCity: "",
     };
   }
 
@@ -37,10 +42,6 @@ export default class DonorInfo extends Component {
 
   onContactChange = (text) => {
     this.setState({ phoneNumber: text });
-  };
-
-  onCityChange = (text) => {
-    this.setState({ city: text });
   };
 
   onBloodGroupChange = (group) => {
@@ -56,16 +57,24 @@ export default class DonorInfo extends Component {
   };
 
   showDOBPicker = () => {
-      this.setState({dobPicker: true});
-      Keyboard.dismiss();
-  }
+    this.setState({ dobPicker: true });
+    Keyboard.dismiss();
+  };
 
   hideDOBPicker = () => {
-      this.setState({dobPicker: false})
-  }
+    this.setState({ dobPicker: false });
+  };
 
   validate = () => {
-    const { name, city, phoneNumber, bloodGroup, gender, dob } = this.state;
+    const {
+      name,
+      phoneNumber,
+      bloodGroup,
+      gender,
+      dob,
+      selectedCountry,
+      selectedCity,
+    } = this.state;
 
     if (!IsNonEmptyString(name)) {
       alert("Enter name");
@@ -77,15 +86,10 @@ export default class DonorInfo extends Component {
       return;
     }
 
-    if (!IsNonEmptyString(city)) {
-      alert("Enter City");
+    if (!IsNonEmptyString(dob)) {
+      alert("Select age");
       return;
     }
-
-    if (!IsNonEmptyString(dob)) {
-        alert("Select age");
-        return;
-      }
 
     if (!IsNonEmptyString(bloodGroup)) {
       alert("Select Blood Group");
@@ -97,19 +101,38 @@ export default class DonorInfo extends Component {
       return;
     }
 
+    if (!IsNonEmptyString(selectedCountry)) {
+      alert("Select Country");
+      return;
+    }
+
+    if (!IsNonEmptyString(selectedCity)) {
+      alert("Select City");
+      return;
+    }
+
     this.saveDataInDatabase();
   };
 
   onDobChange = (date) => {
     this.setState({
-        dob: date.toISOString().substring(0, 10),
-        dobPicker: false,
-      });
-  }
+      dob: date.toISOString().substring(0, 10),
+      dobPicker: false,
+    });
+  };
 
   saveDataInDatabase = () => {
     const { userId, onProfileCompleted } = this.props;
-    const { name, city, phoneNumber, bloodGroup, gender, dob } = this.state;
+    const {
+      name,
+      city,
+      phoneNumber,
+      bloodGroup,
+      gender,
+      dob,
+      selectedCountry,
+      selectedCity,
+    } = this.state;
 
     this.setState({ loading: true });
 
@@ -123,7 +146,9 @@ export default class DonorInfo extends Component {
         bloodGroup,
         gender,
         onboardingStep: 2,
-        dob
+        dob,
+        city: selectedCity,
+        country: selectedCountry,
       })
       .finally(() => {
         this.setState({ loading: false });
@@ -131,8 +156,25 @@ export default class DonorInfo extends Component {
       });
   };
 
+  onCountrySelect = (value) => {
+    this.setState({ selectedCountry: value });
+  };
+
+  onCitySelected = (value) => {
+    this.setState({ selectedCity: value });
+  };
+
   render() {
-    const { name, city, phoneNumber, bloodGroup, gender, loading, dobPicker, dob } = this.state;
+    const {
+      name,
+      city,
+      phoneNumber,
+      bloodGroup,
+      gender,
+      loading,
+      dobPicker,
+      dob,
+    } = this.state;
 
     return (
       <View style={Styles.containerStyle}>
@@ -156,38 +198,38 @@ export default class DonorInfo extends Component {
             style={Styles.textInputStyle}
           />
 
-      
+          <CountrySelector onCountryChange={this.onCountrySelect} />
 
-          <AppTextInput
-            value={city}
-            onChangeText={this.onCityChange}
-            placeholder="Current City"
-            isNonEmpty
-            style={Styles.textInputStyle}
+          <Spacer space={12} />
+
+          <CitySelector
+            country={this.state.selectedCountry}
+            onCitySelected={this.onCitySelected}
           />
 
+          <Spacer />
 
-        <AppTextInput
-          placeholder="Date of birth"
-          style={Styles.textInputStyle}
-          value={dob}
-          onFocus={this.showDOBPicker}
-          hideErrorLabel
-        />
+          <AppTextInput
+            placeholder="Date of birth"
+            style={Styles.textInputStyle}
+            value={dob}
+            onFocus={this.showDOBPicker}
+            hideErrorLabel
+          />
 
-        <DateTimePicker
-          isVisible={dobPicker}
-          mode="date"
-          onConfirm={this.onDobChange}
-          onCancel={this.hideDOBPicker}
-        />
+          <DateTimePicker
+            isVisible={dobPicker}
+            mode="date"
+            onConfirm={this.onDobChange}
+            onCancel={this.hideDOBPicker}
+          />
 
           <AppText style={Styles.textInputStyle} type="label">
             Blood Group
           </AppText>
 
           <ChipGroup
-            style={{ marginTop: 4, }}
+            style={{ marginTop: 4 }}
             onSelected={this.onBloodGroupChange}
             selectedChips={[bloodGroup]}
             scrollEnabled

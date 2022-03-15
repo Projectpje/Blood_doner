@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from "react";
-import { Alert, TouchableOpacity } from "react-native";
+import { Alert, View, TouchableOpacity } from "react-native";
 import { BloodRequirementUrgency } from "../../Utils/Constants/ChipsData";
 import moment from "moment";
 import firebase from "firebase";
@@ -14,9 +14,15 @@ import R from "../../Utils/R";
 import * as Random from "expo-random";
 import { inject, observer } from "mobx-react";
 
+import Styles from "./styles";
+import Spacer from "../Spacer/Spacer";
+
 /**
  * Notification composer view.
  * @param {array} users array of donor information
+ * @param {boolean} isBroadcastMessage
+ * @param {func} onSuccess
+ * @param {func} onCancel on Cancel callback
  */
 
 @inject("userStore")
@@ -43,17 +49,19 @@ export default class NotificationSenderView extends Component {
         address = "",
       },
       onSuccess,
+
+      isBroadcastMessage,
     } = this.props;
     const { bloodUrgency, message } = this.state;
 
     this.setLoader(false);
     this.setMessage("");
 
-    Alert.alert("Notification send successfully");
-
     const expireAfter =
       bloodUrgency === "Today" ? 0 : bloodUrgency === "Tomorrow" ? 1 : 7;
     const expiryDate = moment().add(expireAfter, "days").toString();
+
+    const broadcastId = await Random.getRandomBytes(20).join("");
 
     // Composes message for each user
     users.forEach(async (user) => {
@@ -61,6 +69,8 @@ export default class NotificationSenderView extends Component {
       const notificationUUID = await Random.getRandomBytes(20).join("");
 
       const notificaitonData = {
+        isBroadcastMessage: isBroadcastMessage ?? false,
+        broadcastId: isBroadcastMessage ? broadcastId : "",
         notificationId: notificationUUID,
         sendOn: moment().toString(),
         message,
@@ -81,14 +91,40 @@ export default class NotificationSenderView extends Component {
         .ref(`${DATABASE_NODES.DONOR_NOTIFICATION}/${uid}/${notificationUUID}`)
         .set(notificaitonData);
 
-      firebase
-        .database()
-        .ref(
-          `${DATABASE_NODES.HOSPITAL_NOTIFICATION}/${userId}/${notificationUUID}`
-        )
-        .set(notificaitonData);
+      if (!isBroadcastMessage) {
+        firebase
+          .database()
+          .ref(
+            `${DATABASE_NODES.HOSPITAL_NOTIFICATION}/${userId}/${notificationUUID}`
+          )
+          .set(notificaitonData);
+      }
     });
 
+    if (isBroadcastMessage) {
+      const notificaitonData = {
+        isBroadcastMessage: isBroadcastMessage ?? false,
+        broadcastId: isBroadcastMessage ? broadcastId : "",
+        sendOn: moment().toString(),
+        message,
+        expireOn: expiryDate,
+        status: REQUEST_STATUS.PENDING,
+        donors: users,
+        bloodGroup: users[0]?.bloodGroup,
+      };
+
+      firebase
+        .database()
+        .ref(`${DATABASE_NODES.HOSPITAL_BROADCAST}/${userId}/${broadcastId}`)
+        .set({ broadcastId, expireOn: expiryDate });
+
+      firebase
+        .database()
+        .ref(`${DATABASE_NODES.BROADCAST_NOTIFICATION}/${broadcastId}`)
+        .set(notificaitonData);
+    }
+
+    Alert.alert("Notification send successfully");
     onSuccess?.();
   };
 
@@ -129,6 +165,7 @@ export default class NotificationSenderView extends Component {
 
   render() {
     const { message, bloodUrgency, loader } = this.state;
+    const { onCancel } = this.props;
 
     return (
       <TouchableOpacity
@@ -156,26 +193,25 @@ export default class NotificationSenderView extends Component {
           data={BloodRequirementUrgency}
         />
 
-        <AppButton
-          isLoading={loader}
-          title="Send"
-          onPress={this.sendNotification}
-          style={{ width: 150, marginTop: 5, alignSelf: "flex-end" }}
-        />
+        <View style={Styles.buttonContainer}>
+          {onCancel && (
+            <AppButton
+              title="Cancel"
+              onPress={onCancel}
+              style={{ width: 150, marginTop: 5, alignSelf: "flex-end" }}
+            />
+          )}
+
+          <Spacer />
+
+          <AppButton
+            isLoading={loader}
+            title="Send"
+            onPress={this.sendNotification}
+            style={{ width: 150, marginTop: 5, alignSelf: "flex-end" }}
+          />
+        </View>
       </TouchableOpacity>
     );
   }
 }
-
-// export default function NotificationSenderView({
-//   users = [],
-//   userId,
-//   onSuccess,
-// }) {
-//   const [message, setMessage] = useState("");
-//   const [bloodUrgency, setBloodUrgency] = useState(
-//     BloodRequirementUrgency[2].title
-//   );
-//   const [loader, setLoader] = useState(loader);
-
-// }

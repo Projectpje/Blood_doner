@@ -39,7 +39,7 @@ export default class Login extends Component {
   };
 
   onPasswordChange = (text) => {
-    this.setState({ password: text?.trim().toLowerCase() });
+    this.setState({ password: text?.trim() });
   };
 
   onPress = () => {
@@ -68,10 +68,14 @@ export default class Login extends Component {
       console.log("current user is", currentUser);
     });
 
+    console.log("sign in with email", emailId, password);
+
     firebase
       .auth()
       .signInWithEmailAndPassword(emailId, password)
       .then((data) => {
+        console.log("login data is", data);
+
         const {
           user: { uid },
         } = data;
@@ -92,6 +96,8 @@ export default class Login extends Component {
       .ref(`${DATABASE_NODES.USERS}/${uid}`)
       .on("value", (data) => {
         const response = data.val();
+
+        console.log("response is", `${DATABASE_NODES.USERS}/${uid}`, response);
 
         if (response) {
           const { uid, userType } = response;
@@ -118,10 +124,10 @@ export default class Login extends Component {
 
         const isUserEmailVerified = currentUser.emailVerified;
 
-        if (!isUserEmailVerified && userType !== USER_TYPE.ADMIN) {
-          alert("Email id not verified. Please verify to continue using app");
-          return;
-        }
+        // if (!isUserEmailVerified && userType !== USER_TYPE.ADMIN) {
+        //   alert("Email id not verified. Please verify to continue using app");
+        //   return;
+        // }
 
         if (!emailVerified && isUserEmailVerified) {
           firebase.database().ref(`${node}/${uid}`).update({

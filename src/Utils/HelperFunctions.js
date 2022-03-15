@@ -5,6 +5,7 @@ import { DATABASE_NODES, REQUEST_STATUS, USER_TYPE } from "./Enums";
 import R from "./R";
 import moment from "moment";
 import { CommonActions } from "@react-navigation/native";
+import firebase from "firebase";
 
 export const IsNonEmptyString = (string) => {
   return string?.trim()?.length > 0;
@@ -41,20 +42,22 @@ export const sendPushNotification = ({
   onSuccess,
   onFailure,
 }) => {
-  const body = tokens?.map((token) => {
-    if (!token) {
-      return;
-    }
+  const body = tokens
+    ?.map((token) => {
+      if (!token) {
+        return;
+      }
 
-    return {
-      to: token,
-      title,
-      body: message,
-      priority: "high",
-      sound: "default",
-      channelId: "default",
-    };
-  });
+      return {
+        to: token,
+        title,
+        body: message,
+        priority: "high",
+        sound: "default",
+        channelId: "default",
+      };
+    })
+    .filter(Boolean);
 
   fetch("https://exp.host/--/api/v2/push/send", {
     method: "POST",
@@ -164,8 +167,6 @@ export const hasNotificationExpired = (notification) => {
   const { expireOn, status } = notification;
   const hasExpired =
     moment(expireOn).endOf("day").diff(moment().endOf("day"), "hour") < 0;
-
-  console.log(moment().diff(moment().add(1, "minute"), "minute"));
 
   if (hasExpired && status !== REQUEST_STATUS.COMPLETED) {
     return true;

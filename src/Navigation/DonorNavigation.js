@@ -14,7 +14,7 @@ const Stack = createStackNavigator();
 
 const DonorNavigation = () => {
   return (
-    <Tabs.Navigator headerMode={"none"}>
+    <Tabs.Navigator>
       <Tabs.Screen
         name="DonorDashboard"
         component={Dashboard}

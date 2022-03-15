@@ -6,14 +6,10 @@ import { inject, observer } from "mobx-react";
 import firebase from "firebase";
 import ScreenContainer from "../../Components/ScreenContainer/ScreenContainer";
 import R from "../../Utils/R";
-import Styles from "./styles";
 import AppText from "../../Components/AppText/AppText";
 import { DATABASE_NODES, REQUEST_STATUS, SortType } from "../../Utils/Enums";
 import NotificationCard from "../../Components/NotificationCard/NotificationCard";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
-import * as Location from "expo-location";
 import ViewPager from "@react-native-community/viewpager";
-import { WebView } from "react-native-webview";
 import EmptyListComponent from "../../Components/EmptyListComponent/EmptyListComponent";
 
 @inject("userStore")
@@ -152,7 +148,9 @@ export default class Dashboard extends Component {
         >
           <View key="1" style={{ padding: 10 }}>
             <FlatList
-              contentContainerStyle={{ flex: 1 }}
+              contentContainerStyle={{
+                flex: upcomingNotification?.length > 0 ? 0 : 1,
+              }}
               data={upcomingNotification}
               ListEmptyComponent={() => {
                 return (
@@ -174,7 +172,9 @@ export default class Dashboard extends Component {
 
           <View key="2" style={{ padding: 10 }}>
             <FlatList
-              contentContainerStyle={{ flex: 1 }}
+              contentContainerStyle={{
+                flex: pendingNotification?.length > 0 ? 0 : 1,
+              }}
               data={pendingNotification}
               ListEmptyComponent={() => {
                 return (

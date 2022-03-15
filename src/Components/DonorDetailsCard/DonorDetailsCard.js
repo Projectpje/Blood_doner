@@ -47,10 +47,8 @@ export default function DonorDetailsCard(props) {
   const animation = useRef(new Animated.Value(0));
   const navigation = useNavigation();
   const notificationContainerAnimated = useRef(new Animated.Value(0));
-  const [
-    showNotificationContainer,
-    setNotificationContainerVisiblity,
-  ] = useState(false); // control whether to show notification composer or not.
+  const [showNotificationContainer, setNotificationContainerVisiblity] =
+    useState(false); // control whether to show notification composer or not.
 
   // Effect
   // when multiSelectEnabled is enabled hide the NotificationComposer
@@ -93,12 +91,11 @@ export default function DonorDetailsCard(props) {
     outputRange: [0, 20],
   });
 
-  const notificationHeightInterpolation = notificationContainerAnimated.current.interpolate(
-    {
+  const notificationHeightInterpolation =
+    notificationContainerAnimated.current.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 180],
-    }
-  );
+    });
 
   // Callbacks...
   const onItemLongPress = () => {

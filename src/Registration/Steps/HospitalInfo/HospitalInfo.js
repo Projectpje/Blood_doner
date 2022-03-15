@@ -9,6 +9,9 @@ import AppTextInput from "../../../Components/AppTextInput/AppTextInput";
 import { IsNonEmptyString } from "../../../Utils/HelperFunctions";
 import Styles from "./styles";
 import { DATABASE_NODES } from "../../../Utils/Enums";
+import CountrySelector from "../../../Components/CountrySelector/CountrySelector";
+import CitySelector from "../../../Components/CitySelector/CitySelector";
+import Spacer from "../../../Components/Spacer/Spacer";
 
 export default class HospitalInfo extends Component {
   constructor(props) {
@@ -30,8 +33,8 @@ export default class HospitalInfo extends Component {
   };
 
   onPhoneNumberChange = (text) => {
-    this.setState({phoneNumber: text})
-  }
+    this.setState({ phoneNumber: text });
+  };
 
   onChangeCountry = (text) => {
     this.setState({ country: text });
@@ -50,7 +53,8 @@ export default class HospitalInfo extends Component {
   };
 
   validate = () => {
-    const { name,phoneNumber, country, city, completeAddress, licenseNo } = this.state;
+    const { name, phoneNumber, country, city, completeAddress, licenseNo } =
+      this.state;
 
     if (
       !(
@@ -70,7 +74,8 @@ export default class HospitalInfo extends Component {
   };
 
   saveRecordInDatabase = () => {
-    const { name, country, city, completeAddress, licenseNo, phoneNumber } = this.state;
+    const { name, country, city, completeAddress, licenseNo, phoneNumber } =
+      this.state;
     const { onProfileCompleted } = this.props;
 
     const { userId } = this.props;
@@ -86,7 +91,7 @@ export default class HospitalInfo extends Component {
         city,
         completeAddress,
         licenseNo,
-        phoneNumber
+        phoneNumber,
       })
       .then(() => {
         onProfileCompleted?.();
@@ -107,14 +112,12 @@ export default class HospitalInfo extends Component {
       completeAddress,
       licenseNo,
       loading,
-      phoneNumber
+      phoneNumber,
     } = this.state;
 
     return (
       <View style={Styles.containerStyle}>
         <KeyboardAwareScrollView>
-          <TextInput multiline onChangeText />
-
           <AppTextInput
             placeholder="Enter Name"
             isNonEmpty
@@ -131,20 +134,13 @@ export default class HospitalInfo extends Component {
             onChangeText={this.onPhoneNumberChange}
           />
 
-          <AppTextInput
-            placeholder="Country"
-            isNonEmpty
-            style={Styles.inputStyle}
-            value={country}
-            onChangeText={this.onChangeCountry}
-          />
-          <AppTextInput
-            placeholder="City"
-            isNonEmpty
-            style={Styles.inputStyle}
-            value={city}
-            onChangeText={this.onChangeCity}
-          />
+          <CountrySelector onCountryChange={this.onChangeCountry} />
+
+          <Spacer space={10} />
+
+          <CitySelector country={country} onCitySelected={this.onChangeCity} />
+
+          <Spacer space={5} />
 
           <AppTextInput
             placeholder="Complete Address"

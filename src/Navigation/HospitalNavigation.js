@@ -9,6 +9,7 @@ import DonorProfile from "../Hospitals/DonorProfile/DonorProfile";
 import Profile from "../Donors/Profile/Profile";
 import AllDonorsList from "../Hospitals/AllDonorsList/AllDonorsList";
 import R from "../Utils/R";
+import BroadcastRequest from "../Hospitals/BroadcastRequest/BroadcastRequest";
 
 const Tabs = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -41,6 +42,22 @@ const BottomTab = () => {
             return (
               <Image
                 source={R.Images.UserType.Donor}
+                style={{ width: 16, height: 16, resizeMode: "contain" }}
+              />
+            );
+          },
+        }}
+      />
+
+      <Tabs.Screen
+        name="Broadcast"
+        component={BroadcastRequest}
+        options={{
+          title: "Broadcast",
+          tabBarIcon: () => {
+            return (
+              <Image
+                source={R.Images.BROADCAST}
                 style={{ width: 16, height: 16, resizeMode: "contain" }}
               />
             );

@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from "react";
-import { Alert, SafeAreaView, Text, View } from "react-native";
+import { Alert, View } from "react-native";
 import AppButton from "../../Components/AppButton/AppButton";
 import ScreenContainer from "../../Components/ScreenContainer/ScreenContainer";
 import firebase from "firebase";
@@ -13,6 +13,9 @@ import { DATABASE_NODES, USER_TYPE } from "../../Utils/Enums";
 import Styles from "./styles";
 import R from "../../Utils/R";
 import { runAnimation } from "../../Utils/HelperFunctions";
+import Spacer from "../../Components/Spacer/Spacer";
+import CountrySelector from "../../Components/CountrySelector/CountrySelector";
+import CitySelector from "../../Components/CitySelector/CitySelector";
 
 @inject("userStore")
 @observer
@@ -29,6 +32,8 @@ export default class Profile extends Component {
         bloodGroup,
         phoneNumber,
         gender,
+        city,
+        country,
       },
     } = props;
 
@@ -41,6 +46,8 @@ export default class Profile extends Component {
       gender,
       userType,
       userId,
+      selectedCountry: country,
+      selectedCity: city,
     };
   }
 
@@ -92,7 +99,14 @@ export default class Profile extends Component {
   };
 
   onSave = () => {
-    const { userName, phoneNumber, userType, userId } = this.state;
+    const {
+      userName,
+      phoneNumber,
+      userType,
+      userId,
+      selectedCountry,
+      selectedCity,
+    } = this.state;
 
     const userNode =
       userType === USER_TYPE.DONOR
@@ -106,9 +120,13 @@ export default class Profile extends Component {
         {
           name: userName,
           phoneNumber,
+          country: selectedCountry,
+          city: selectedCity,
         },
         () => {
           this.props.userStore.userName = userName;
+          this.props.userStore.country = selectedCountry;
+          this.props.userStore.city = selectedCity;
           Alert.alert("Success", "Record updated successfully");
         }
       );
@@ -126,6 +144,14 @@ export default class Profile extends Component {
       "Success",
       "A password reset email has been sent to your email address"
     );
+  };
+
+  onCountrySelect = (value) => {
+    this.setState({ selectedCountry: value?.value });
+  };
+
+  onCitySelected = (value) => {
+    this.setState({ selectedCity: value?.value });
   };
 
   render() {
@@ -184,10 +210,27 @@ export default class Profile extends Component {
           />
 
           {isDonor && (
-            <View>
+            <View style={{ zIndex: 100 }}>
               <AppText>Gender: {gender}</AppText>
 
+              <Spacer space={12} />
+
               <AppText>Blood group: {bloodGroup}</AppText>
+
+              <Spacer space={12} />
+
+              <CountrySelector
+                selectedCountry={this.state.selectedCountry}
+                onCountryChange={this.onCountrySelect}
+              />
+
+              <Spacer space={12} />
+
+              <CitySelector
+                selectedCity={this.state.selectedCity}
+                onCitySelected={this.onCitySelected}
+                country={this.state.selectedCountry}
+              />
             </View>
           )}
 
