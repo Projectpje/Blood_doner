@@ -121,6 +121,7 @@ export default class Login extends Component {
 
         const { emailVerified, userType } = response;
         const currentUser = firebase.auth().currentUser;
+        
 
         const isUserEmailVerified = currentUser.emailVerified;
 

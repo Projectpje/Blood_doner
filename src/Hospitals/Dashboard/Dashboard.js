@@ -144,7 +144,7 @@ export default class Dashboard extends Component {
 
     this.setState({ selectedIndex: position });
   };
-  
+
   render() {
     const { filteredList, loading, filters, selectedIndex = 0 } = this.state;
 
@@ -163,7 +163,10 @@ export default class Dashboard extends Component {
                 onPress={() => {
                   this.pagerRef.setPage(0);
                 }}
-                style={{ color: selectedIndex === 0 ? "red" : "white" }}
+                style={{
+                  color:
+                    selectedIndex === 0 ? R.Colors.TextRed : R.Colors.TextColor,
+                }}
               >
                 Direct Request
               </AppText>
@@ -177,7 +180,10 @@ export default class Dashboard extends Component {
               }}
             >
               <AppText
-                style={{ color: selectedIndex === 1 ? "red" : "white" }}
+                style={{
+                  color:
+                    selectedIndex === 1 ? R.Colors.TextRed : R.Colors.TextColor,
+                }}
                 onPress={() => {
                   this.pagerRef.setPage(1);
                 }}

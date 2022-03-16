@@ -174,7 +174,7 @@ export default function DonorDetailsCard(props) {
             Styles.containerStyle,
             {
               backgroundColor: hasDonatedWithin15days
-                ? "gray"
+                ? R.Colors.DisabledColor
                 : R.Colors.PrimaryColor,
             },
           ]}

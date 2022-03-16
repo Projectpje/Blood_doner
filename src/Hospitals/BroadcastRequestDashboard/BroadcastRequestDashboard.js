@@ -20,8 +20,7 @@ export default function BroadcastRequestDashboard({ userStore }) {
 
   const loadBroadcastMessage = async () => {
     updateLoading(true);
-    const requsts = await fetchHospitalBroadcast(userStore.userId);
-
+    
     firebase
       .database()
       .ref(`${DATABASE_NODES.HOSPITAL_BROADCAST}/${userStore.userId}`)
@@ -38,7 +37,7 @@ export default function BroadcastRequestDashboard({ userStore }) {
         }
 
         updateLoading(false);
-        updateAllRequest(requsts);
+        updateAllRequest(allRequest);
       });
   };
 

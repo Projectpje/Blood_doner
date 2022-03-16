@@ -17,7 +17,7 @@ export default function ScreenContainer(props) {
 
   return (
     <LinearGradient
-      colors={["#FDB777", "#FDA766"]}
+      colors={["#FBFBFD", "#FBFBFD"]}
       start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1 }}
       style={Styles.containerStyle}

@@ -118,7 +118,7 @@ export default class Dashboard extends Component {
               onPress={() => {
                 this.pagerRef.setPage(0);
               }}
-              style={{ color: selectedIndex === 0 ? "red" : "white" }}
+              style={{ color: selectedIndex === 0 ? R.Colors.TextRed : R.Colors.TextColor }}
             >
               Upcoming
             </AppText>
@@ -128,7 +128,7 @@ export default class Dashboard extends Component {
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
             <AppText
-              style={{ color: selectedIndex === 1 ? "red" : "white" }}
+               style={{ color: selectedIndex === 1 ? R.Colors.TextRed : R.Colors.TextColor }}
               onPress={() => {
                 this.pagerRef.setPage(1);
               }}

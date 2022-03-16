@@ -85,7 +85,7 @@ export default function BroadcastMessageInfo({ broadcastId }) {
   return (
     <View style={Styles.containerStyle}>
       <View style={Styles.statusContainer}>
-        <AppText type="small">Status</AppText>
+        <AppText type="small">{status}</AppText>
       </View>
 
       <View style={Styles.bloodGroupContainer}>
@@ -110,7 +110,7 @@ export default function BroadcastMessageInfo({ broadcastId }) {
         </View>
       )}
 
-      {hasResponse && (
+      {hasResponse && !hasCompleted && (
         <View
           style={{ flexDirection: "row", paddingVertical: 10, marginTop: 20 }}
         >

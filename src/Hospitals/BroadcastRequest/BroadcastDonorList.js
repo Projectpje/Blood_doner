@@ -13,6 +13,7 @@ import { USER_TYPE } from "../../Utils/Enums";
 import AppButton from "../../Components/AppButton/AppButton";
 import Spacer from "../../Components/Spacer/Spacer";
 import NotificationSenderView from "../../Components/NotificationSenderView/NotificationSenderView";
+import moment from "moment";
 
 const renderItemSeparator = () => {
   return <View style={{ height: 10 }} />;
@@ -25,6 +26,8 @@ export default function BroadcastDonorList({ bloodGroup, city, userStore }) {
   const [donorList, updateDonorList] = useState([]);
   const [showNotificationComposer, updateShowNotificationComponser] =
     useState();
+
+  const [eligleForDontationsDonorList, updateEligleDonorList] = useState([]);
 
   const fetchDonorList = async () => {
     try {
@@ -65,6 +68,13 @@ export default function BroadcastDonorList({ bloodGroup, city, userStore }) {
         {
           text: "Confirm",
           onPress: () => {
+
+            const donorList = filteredDonorList.filter((value) => {
+              console.log("value is", value);
+              return moment().diff(moment(value.donorInfo?.lastBloodDonation), "days") > 15;
+            })
+
+            updateEligleDonorList(donorList);
             updateShowNotificationComponser(true);
           },
         },
@@ -119,7 +129,7 @@ export default function BroadcastDonorList({ bloodGroup, city, userStore }) {
           isBroadcastMessage
           onCancel={onCancelSendNotification}
           userId={userId}
-          users={filteredDonorList}
+          users={eligleForDontationsDonorList}
           onSuccess={onCancelSendNotification}
         />
       )}

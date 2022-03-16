@@ -12,12 +12,12 @@ const styles = StyleSheet.create({
   normalTextStyle: {
     fontSize: 16,
     letterSpacing: 0.5,
-    color: "white",
+    color: R.Colors.TextColor,
   },
 
   small: {
-    fontSize: 12,
-    color: "white",
+    fontSize: 14,
+    color: R.Colors.TextColor,
   },
 
   lable: {
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "white",
+    color: R.Colors.TextColor,
   },
 
   mandatorySign: {

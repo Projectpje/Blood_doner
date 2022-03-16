@@ -7,14 +7,14 @@ const styles = StyleSheet.create({
   containerStyle: {
     width: 40,
     height: 40,
-    backgroundColor: R.Colors.PrimaryDark,
+    backgroundColor: R.Colors.SelectedBlue,
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
   },
 
   textStyle: {
-    textTransform: "capitalize",
+    textTransform: "uppercase",
   },
 });
 
