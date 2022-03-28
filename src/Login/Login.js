@@ -35,7 +35,7 @@ export default class Login extends Component {
   };
 
   onEmailIdChange = (text) => {
-    this.setState({ emailId: text?.trim().toLowerCase() });
+    this.setState({ emailId: text?.trim() });
   };
 
   onPasswordChange = (text) => {
@@ -72,7 +72,7 @@ export default class Login extends Component {
 
     firebase
       .auth()
-      .signInWithEmailAndPassword(emailId, password)
+      .signInWithEmailAndPassword(emailId.toLocaleLowerCase(), password)
       .then((data) => {
         console.log("login data is", data);
 

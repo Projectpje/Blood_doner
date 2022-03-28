@@ -58,6 +58,7 @@ export default function BroadcastRequestDashboard({ userStore }) {
         contentContainerStyle={{
           flex: allRequests?.length > 0 ? 0 : 1,
         }}
+        extraData={JSON.stringify(allRequests)}
         data={allRequests}
         ListEmptyComponent={() => {
           return (

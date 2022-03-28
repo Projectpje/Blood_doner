@@ -24,7 +24,7 @@ export default function CountrySelector({ onCountryChange, selectedCountry }) {
   return (
     <DropDownPickerWrapper
       searchable
-      zIndex={10}
+      zIndex={100}
       defaultValue={selectedCountry}
       placeholder={"Select Country"}
       emptyLabel={"Click to load Countries"}

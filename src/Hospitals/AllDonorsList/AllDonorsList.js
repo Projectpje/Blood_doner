@@ -157,8 +157,6 @@ export default class AllDonorsList extends Component {
       const { dob } = value;
       const age = moment().diff(moment(dob), "years");
 
-      console.log("age", age, filterAge);
-
       return filterAge <= age;
     });
 

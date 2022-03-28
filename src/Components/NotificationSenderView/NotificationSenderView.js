@@ -62,6 +62,7 @@ export default class NotificationSenderView extends Component {
     const expiryDate = moment().add(expireAfter, "days").toString();
 
     const broadcastId = await Random.getRandomBytes(20).join("");
+    const requestId = await Random.getRandomBytes(20).join("");
 
     // Composes message for each user
     users.forEach(async (user) => {
@@ -69,6 +70,7 @@ export default class NotificationSenderView extends Component {
       const notificationUUID = await Random.getRandomBytes(20).join("");
 
       const notificaitonData = {
+        requestId,
         isBroadcastMessage: isBroadcastMessage ?? false,
         broadcastId: isBroadcastMessage ? broadcastId : "",
         notificationId: notificationUUID,
@@ -103,6 +105,7 @@ export default class NotificationSenderView extends Component {
 
     if (isBroadcastMessage) {
       const notificaitonData = {
+        requestId,
         isBroadcastMessage: isBroadcastMessage ?? false,
         broadcastId: isBroadcastMessage ? broadcastId : "",
         sendOn: moment().toString(),
@@ -122,6 +125,13 @@ export default class NotificationSenderView extends Component {
         .database()
         .ref(`${DATABASE_NODES.BROADCAST_NOTIFICATION}/${broadcastId}`)
         .set(notificaitonData);
+
+      firebase
+      .database()
+      .ref(`${DATABASE_NODES.REQUEST}/${requestId}`)
+      .set({
+       ...notificaitonData
+      })
     }
 
     Alert.alert("Notification send successfully");

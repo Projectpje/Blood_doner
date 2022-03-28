@@ -62,6 +62,11 @@ export default function BroadcastMessageInfo({ broadcastId }) {
       .database()
       .ref(`${DATABASE_NODES.BROADCAST_NOTIFICATION}/${broadcastId}/status`)
       .set(status);
+
+    firebase
+    .database()
+    .ref(`${DATABASE_NODES.REQUEST}/${notificationData.data.requestId}/status`)
+    .set(status);
   };
 
   // Update the status to the cancelled

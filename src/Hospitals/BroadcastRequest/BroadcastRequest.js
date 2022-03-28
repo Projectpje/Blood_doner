@@ -54,20 +54,12 @@ export default class BroadcastRequest extends Component {
             Broadcast Request
           </AppText>
 
-          <View style={{ zIndex: 1 }}>
-            <View style={Styles.filterContainer}>
-              <View style={Styles.countryDropDown}>
-                <CountrySelector onCountryChange={this.onCountrySelected} />
-              </View>
+          <CountrySelector onCountryChange={this.onCountrySelected} />
 
-              <View style={Styles.cityDropdownStyle}>
-                <CitySelector
-                  country={selectedCountry}
-                  onCitySelected={this.onCitySelected}
-                />
-              </View>
-            </View>
-          </View>
+          <CitySelector
+            country={selectedCountry}
+            onCitySelected={this.onCitySelected}
+          />
 
           <Spacer />
 

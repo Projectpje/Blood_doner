@@ -198,8 +198,9 @@ export default class DonorInfo extends Component {
             style={Styles.textInputStyle}
           />
 
+        <View style={{zIndex: 1000}}>
           <CountrySelector onCountryChange={this.onCountrySelect} />
-
+          </View>
           <Spacer space={12} />
 
           <CitySelector

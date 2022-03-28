@@ -47,6 +47,7 @@ export const DATABASE_NODES = {
   USERS: "users",
   DONORINFO: "donorInfo",
   HOSPITALINFO: "hospitalInfo",
+  REQUEST: "request",
   HOSPITAL_NOTIFICATION: "hospital_notification",
   HOSPITAL_BROADCAST: "hospital_broadcast",
   BROADCAST_NOTIFICATION: "broadcast_notification",

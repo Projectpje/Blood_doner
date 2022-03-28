@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from "react";
-import { Alert, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import AppButton from "../../Components/AppButton/AppButton";
 import ScreenContainer from "../../Components/ScreenContainer/ScreenContainer";
 import firebase from "firebase";
@@ -147,11 +147,11 @@ export default class Profile extends Component {
   };
 
   onCountrySelect = (value) => {
-    this.setState({ selectedCountry: value?.value });
+    this.setState({ selectedCountry: value?.value ?? value });
   };
 
   onCitySelected = (value) => {
-    this.setState({ selectedCity: value?.value });
+    this.setState({ selectedCity: value?.value?? value });
   };
 
   render() {
@@ -165,6 +165,7 @@ export default class Profile extends Component {
 
     return (
       <ScreenContainer>
+        <ScrollView>
         <View style={Styles.containerStyle}>
           <View style={{ alignItems: "flex-end" }}>
             <AppText
@@ -210,7 +211,7 @@ export default class Profile extends Component {
           />
 
           {isDonor && (
-            <View style={{ zIndex: 100 }}>
+            <>
               <AppText>Gender: {gender}</AppText>
 
               <Spacer space={12} />
@@ -231,7 +232,7 @@ export default class Profile extends Component {
                 onCitySelected={this.onCitySelected}
                 country={this.state.selectedCountry}
               />
-            </View>
+            </>
           )}
 
           {!isEditing && (
@@ -257,6 +258,7 @@ export default class Profile extends Component {
             />
           )}
         </View>
+        </ScrollView>
       </ScreenContainer>
     );
   }

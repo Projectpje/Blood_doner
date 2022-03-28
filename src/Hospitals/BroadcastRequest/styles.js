@@ -7,16 +7,17 @@ const styles = StyleSheet.create({
   },
 
   filterContainer: {
+    zIndex: 100,
     flexDirection: "row",
   },
 
   countryDropDown: {
-    flex: 1,
+    zIndex: 100,
     marginRight: 4,
   },
 
   cityDropdownStyle: {
-    flex: 1,
+    zIndex: 99,
     marginLeft: 4,
   },
 

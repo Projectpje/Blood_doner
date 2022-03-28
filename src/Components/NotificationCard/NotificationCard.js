@@ -30,17 +30,16 @@ export default function NotificationCard({ item, isDonor }) {
     hospitalInfo,
     isBroadcastMessage,
     broadcastId,
+    requestId
   } = item; // notification node from firebase
 
   const [broadcastData, updateBroadcastData] = useState({});
 
   const status = broadcastData?.status ?? item.status;
 
-  console.log("status is", status);
-
   const borderColor = R.HelperFunctions.GetStatusColor(status);
   const { hospitalId, address } = hospitalInfo;
-  const { uid } = donorInfo;
+  const { uid, city } = donorInfo;
 
   const hasResponse =
     status !== REQUEST_STATUS.PENDING ||
@@ -58,6 +57,15 @@ export default function NotificationCard({ item, isDonor }) {
         `${DATABASE_NODES.DONOR_NOTIFICATION}/${uid}/${notificationId}/status`
       )
       .set(status);
+
+
+      firebase.database()
+      .ref(`${DATABASE_NODES.REQUEST}/${requestId}/status`)
+      .set(status)
+
+      firebase.database()
+      .ref(`${DATABASE_NODES.REQUEST}/${requestId}/city`)
+      .set(city)
 
     if (isBroadcastMessage) {
       firebase

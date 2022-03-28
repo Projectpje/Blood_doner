@@ -32,12 +32,12 @@ export default function CitySelector({
 
   return (
     <DropDownPickerWrapper
-      zIndex={9}
+      zIndex={99}
       searchable
       defaultValue={selectedCity}
       disabled={!country}
       placeholder={"Select City"}
-      emptyLabel={!country ? "Select Country first" : "Click to load Cities"}
+      emptyLabel={!country ? "Select Country" : "Click to load Cities"}
       options={cityList}
       loading={isLoading}
       onClickToLoad={loadCities}
