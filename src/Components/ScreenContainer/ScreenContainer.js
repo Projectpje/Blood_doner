@@ -38,8 +38,8 @@ export default function ScreenContainer(props) {
               loop
               speed={0.5}
               style={{
-                width: 100,
-                height: 100,
+                width: 75,
+                height: 75,
               }}
             />
             <AppText style={{ marginTop: 20 }}>Loading information</AppText>

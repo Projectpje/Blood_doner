@@ -32,6 +32,25 @@ export function fetchCities(country) {
   });
 }
 
+export function fetchHospitalList() {
+  return new Promise((resolve) => {
+    firebase
+      .database()
+      .ref(`${DATABASE_NODES.HOSPITAL}`)
+      .once("value", (snapshot) => {
+        const data = snapshot.val();
+        const list = [];
+
+        for (const hospitalId in data) {
+          const { name } = data[hospitalId];
+          list.push({ label: name, value: name });
+        }
+
+        resolve(list);
+      });
+  });
+}
+
 export function fetchFilteredDonorList(city) {
   return new Promise((resolve) => {
     firebase

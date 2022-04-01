@@ -37,7 +37,7 @@ export default function CitySelector({
       defaultValue={selectedCity}
       disabled={!country}
       placeholder={"Select City"}
-      emptyLabel={!country ? "Select Country" : "Click to load Cities"}
+      emptyLabel={!country ? "Select Country First" : "Click to load Cities"}
       options={cityList}
       loading={isLoading}
       onClickToLoad={loadCities}

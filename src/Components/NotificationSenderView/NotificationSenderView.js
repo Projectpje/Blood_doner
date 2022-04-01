@@ -127,11 +127,12 @@ export default class NotificationSenderView extends Component {
         .set(notificaitonData);
 
       firebase
-      .database()
-      .ref(`${DATABASE_NODES.REQUEST}/${requestId}`)
-      .set({
-       ...notificaitonData
-      })
+        .database()
+        .ref(`${DATABASE_NODES.REQUEST}/${requestId}`)
+        .set({
+          hospitalName: userName,
+          ...notificaitonData,
+        });
     }
 
     Alert.alert("Notification send successfully");

@@ -21,6 +21,7 @@ import { GetStatusColor, runAnimation } from "../../Utils/HelperFunctions";
 import AppText from "../../Components/AppText/AppText";
 import CountrySelector from "../../Components/CountrySelector/CountrySelector";
 import CitySelector from "../../Components/CitySelector/CitySelector";
+import HospitalSelector from "../../Components/HospitalSelector/HospitalSelector";
 
 export default class Stats extends Component {
   constructor(props) {
@@ -29,8 +30,10 @@ export default class Stats extends Component {
     this.state = {
       notificationData: [],
       filteredNotificationData: [],
+      allHospitalsList: [],
       selectedCountry: "",
       selectedCity: "",
+      selectedHospital: "",
       showFilters: false,
       pending: 0,
       accepted: 0,
@@ -53,8 +56,6 @@ export default class Stats extends Component {
       pending = 0,
       rejected = 0,
       expired = 0;
-
-    console.log("calucalte stats", data);
 
     for (let requestId in data) {
       const notification = data[requestId];
@@ -115,20 +116,17 @@ export default class Stats extends Component {
     this.setState({ selectedCountry: country });
   };
 
-  onCitySelected = (city) => {
-    this.setState({ selectedCity: city });
+  applyFilter = () => {
+    const { selectedCity: city, selectedHospital: hospital } = this.state;
 
     const filterData = {};
-
     const data = this.state.notificationData;
 
     for (let requestId in data) {
       const notification = data[requestId];
-      const { city: notifCity } = notification;
+      const { city: notifCity, hospitalName } = notification;
 
-      console.log("city and notif city is", city, notifCity);
-
-      if (city === notifCity) {
+      if (city === notifCity || hospitalName === hospital) {
         filterData[requestId] = notification;
       }
     }
@@ -138,6 +136,12 @@ export default class Stats extends Component {
     });
 
     this.calculateStats(filterData);
+  };
+
+  onCitySelected = (city) => {
+    this.setState({ selectedCity: city }, () => {
+      this.applyFilter();
+    });
   };
 
   onToggleFilter = () => {
@@ -153,6 +157,12 @@ export default class Stats extends Component {
     });
 
     this.calculateStats(this.state.notificationData);
+  };
+
+  onHospitalChange = (hospital) => {
+    this.setState({ selectedHospital: hospital }, () => {
+      this.applyFilter();
+    });
   };
 
   render() {
@@ -215,7 +225,9 @@ export default class Stats extends Component {
           </View>
 
           {showFilters && (
-            <View style={{ flex: 1, paddingHorizontal: 10 }}>
+            <View style={{ flex: 1, paddingHorizontal: 10, zIndex: 10 }}>
+              <HospitalSelector onHospitalChange={this.onHospitalChange} />
+
               <CountrySelector onCountryChange={this.onCountryChange} />
 
               <CitySelector
@@ -223,10 +235,9 @@ export default class Stats extends Component {
                 country={selectedCountry}
               />
 
-              <AppText onPress={this.onClearCity}
-                style={Styles.crossStyle}
-              >Clear</AppText>
-
+              <AppText onPress={this.onClearCity} style={Styles.crossStyle}>
+                Clear
+              </AppText>
             </View>
           )}
 
